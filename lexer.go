@@ -436,92 +436,6 @@ func (s *Scanner) digits(ch0 rune, base int, invalid *rune) (ch rune, digsep int
 	return
 }
 
-func (s *Scanner) scanNumber(ch rune, seenDot bool) (rune, rune) {
-	base := 10         // number base
-	prefix := rune(0)  // one of 0 (decimal), '0' (0-octal), 'x', 'o', or 'b'
-	digsep := 0        // bit 0: digit present, bit 1: '_' present
-	invalid := rune(0) // invalid digit in literal, or 0
-
-	// integer part
-	var tok rune
-	var ds int
-	if !seenDot {
-		tok = Int
-		if ch == '0' {
-			ch = s.next()
-			switch lower(ch) {
-			case 'x':
-				ch = s.next()
-				base, prefix = 16, 'x'
-			case 'o':
-				ch = s.next()
-				base, prefix = 8, 'o'
-			case 'b':
-				ch = s.next()
-				base, prefix = 2, 'b'
-			default:
-				base, prefix = 8, '0'
-				digsep = 1 // leading 0
-			}
-		}
-		ch, ds = s.digits(ch, base, &invalid)
-		digsep |= ds
-		if ch == '.' && s.Mode&ScanFloats != 0 {
-			ch = s.next()
-			seenDot = true
-		}
-	}
-
-	// fractional part
-	if seenDot {
-		tok = Float
-		if prefix == 'o' || prefix == 'b' {
-			s.error("invalid radix point in " + litname(prefix))
-		}
-		ch, ds = s.digits(ch, base, &invalid)
-		digsep |= ds
-	}
-
-	if digsep&1 == 0 {
-		s.error(litname(prefix) + " has no digits")
-	}
-
-	// exponent
-	if e := lower(ch); (e == 'e' || e == 'p') && s.Mode&ScanFloats != 0 {
-		switch {
-		case e == 'e' && prefix != 0 && prefix != '0':
-			s.errorf("%q exponent requires decimal mantissa", ch)
-		case e == 'p' && prefix != 'x':
-			s.errorf("%q exponent requires hexadecimal mantissa", ch)
-		}
-		ch = s.next()
-		tok = Float
-		if ch == '+' || ch == '-' {
-			ch = s.next()
-		}
-		ch, ds = s.digits(ch, 10, nil)
-		digsep |= ds
-		if ds&1 == 0 {
-			s.error("exponent has no digits")
-		}
-	} else if prefix == 'x' && tok == Float {
-		s.error("hexadecimal mantissa requires a 'p' exponent")
-	}
-
-	if tok == Int && invalid != 0 {
-		s.errorf("invalid digit %q in %s", invalid, litname(prefix))
-	}
-
-	if digsep&2 != 0 {
-		s.tokEnd = s.srcPos - s.lastCharLen // make sure token text is terminated
-		if i := invalidSep(s.TokenText()); i >= 0 {
-			s.error("'_' must separate successive digits")
-		}
-	}
-
-	return tok, ch
-}
-
 func litname(prefix rune) string {
 	switch prefix {
 	default:
@@ -583,71 +497,6 @@ func digitVal(ch rune) int {
 		return int(lower(ch) - 'a' + 10)
 	}
 	return 16 // larger than any legal digit val
-}
-
-func (s *Scanner) scanDigits(ch rune, base, n int) rune {
-	for n > 0 && digitVal(ch) < base {
-		ch = s.next()
-		n--
-	}
-	if n > 0 {
-		s.error("invalid char escape")
-	}
-	return ch
-}
-
-func (s *Scanner) scanEscape(quote rune) rune {
-	ch := s.next() // read character after '/'
-	switch ch {
-	case 'a', 'b', 'f', 'n', 'r', 't', 'v', '\\', quote:
-		// nothing to do
-		ch = s.next()
-	case '0', '1', '2', '3', '4', '5', '6', '7':
-		ch = s.scanDigits(ch, 8, 3)
-	case 'x':
-		ch = s.scanDigits(s.next(), 16, 2)
-	case 'u':
-		ch = s.scanDigits(s.next(), 16, 4)
-	case 'U':
-		ch = s.scanDigits(s.next(), 16, 8)
-	default:
-		s.error("invalid char escape")
-	}
-	return ch
-}
-
-func (s *Scanner) scanString(quote rune) (n int) {
-	ch := s.next() // read character after quote
-	for ch != quote {
-		if ch == '\n' || ch < 0 {
-			s.error("literal not terminated")
-			return
-		}
-		if ch == '\\' {
-			ch = s.scanEscape(quote)
-		} else {
-			ch = s.next()
-		}
-		n++
-	}
-	return
-}
-
-func (s *Scanner) scanRawString() {
-	ch := s.next() // read character after '`'
-	for ch != '`' {
-		if ch < 0 {
-			s.error("literal not terminated")
-			return
-		}
-		ch = s.next()
-	}
-}
-
-func (s *Scanner) scanChar() {
-	if s.scanString('\'') != 1 {
-		s.error("invalid char literal")
-	}
 }
 
 func (s *Scanner) scanComment(ch rune) (rune, bool, bool) {
@@ -769,103 +618,64 @@ redo:
 
 	// determine token value
 	tok := ch
-	switch {
-	case s.isIdentRune(ch, 0):
-		if s.Mode&ScanIdents != 0 {
-			tok = Ident
-			ch = s.scanIdentifier()
-		} else {
-			ch = s.next()
-		}
-	case isDecimal(ch):
-		if s.Mode&(ScanInts|ScanFloats) != 0 {
-			tok, ch = s.scanNumber(ch, false)
-		} else {
-			ch = s.next()
-		}
+	switch ch {
+	case EOF:
+		break
 	default:
-		switch ch {
-		case EOF:
-			break
-		case '"':
-			if s.Mode&ScanStrings != 0 {
-				s.scanString('"')
-				tok = String
-			}
-			ch = s.next()
-		case '\'':
-			if s.Mode&ScanChars != 0 {
-				s.scanChar()
-				tok = Char
-			}
-			ch = s.next()
-		case '.':
-			ch = s.next()
-			if isDecimal(ch) && s.Mode&ScanFloats != 0 {
-				tok, ch = s.scanNumber(ch, true)
-			}
-		case '`':
-			if s.Mode&ScanRawStrings != 0 {
-				s.scanRawString()
-				tok = RawString
-			}
-			ch = s.next()
-		default:
-			//Set the comment characters
-			//@todo read a file to get additional comment characters
-			//@todo add more file types and comment characters
-			Extensions := []CommentValues{
-				{
-					ext:         []string{".go", ".py", ".js", ".rs", ".html", ".gohtml", ".php"},
-					startSingle: "//",
-					startMulti:  "/*",
-					endMulti:    "*/",
-				},
-				{
-					ext:         []string{".sh", ".php"},
-					startSingle: "#",
-					startMulti:  "",
-					endMulti:    "",
-				},
-				{
-					ext:         []string{".html", ".gohtml"},
-					startSingle: "",
-					startMulti:  "<!--",
-					endMulti:    "-->",
-				},
-			}
-			for v := range Extensions {
-				ext := Extensions[v].ext
-				for e := range ext {
-					if ext[e] == s.srcType {
-						s.CurSingleComment = Extensions[v].startSingle
-						s.CurMultiStart = Extensions[v].startMulti
-						s.CurMultiEnd = Extensions[v].endMulti
-						result := []rune(s.CurSingleComment)
-						if ch == result[0] {
-							if s.Mode&SkipComments != 0 {
-								s.tokPos = -1 // don't collect token text
-								ch, isSingle, isMulti := s.scanComment(ch)
-								if isSingle || isMulti {
-									tok = Comment
-								} else {
-									tok = ch
-								}
-								goto redo
-							}
+		//Set the comment characters
+		//@todo read a file to get additional comment characters
+		//@todo add more file types and comment characters
+		Extensions := []CommentValues{
+			{
+				ext:         []string{".go", ".py", ".js", ".rs", ".html", ".gohtml", ".php"},
+				startSingle: "//",
+				startMulti:  "/*",
+				endMulti:    "*/",
+			},
+			{
+				ext:         []string{".sh", ".php"},
+				startSingle: "#",
+				startMulti:  "",
+				endMulti:    "",
+			},
+			{
+				ext:         []string{".html", ".gohtml"},
+				startSingle: "",
+				startMulti:  "<!--",
+				endMulti:    "-->",
+			},
+		}
+		for v := range Extensions {
+			ext := Extensions[v].ext
+			for e := range ext {
+				if ext[e] == s.srcType {
+					s.CurSingleComment = Extensions[v].startSingle
+					s.CurMultiStart = Extensions[v].startMulti
+					s.CurMultiEnd = Extensions[v].endMulti
+					result := []rune(s.CurSingleComment)
+					if ch == result[0] {
+						if s.Mode&SkipComments != 0 {
+							s.tokPos = -1 // don't collect token text
 							ch, isSingle, isMulti := s.scanComment(ch)
 							if isSingle || isMulti {
 								tok = Comment
 							} else {
 								tok = ch
 							}
-
+							goto redo
 						}
+						ch, isSingle, isMulti := s.scanComment(ch)
+						if isSingle || isMulti {
+							tok = Comment
+						} else {
+							tok = ch
+						}
+
 					}
 				}
 			}
-			ch = s.next()
 		}
+		ch = s.next()
 	}
 
 	// end of token text
