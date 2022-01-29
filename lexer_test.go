@@ -3,7 +3,7 @@ package lexer_test
 import (
 	"testing"
 
-	lexer "github.com/Acetolyne/sourcelex"
+	lexer "github.com/Acetolyne/commentlex"
 )
 
 // func TestUTF8Filter(t *testing.T) {

@@ -1,3 +1,3 @@
-module github.com/Acetolyne/sourcelex
+module github.com/Acetolyne/commentlex
 
 go 1.17
