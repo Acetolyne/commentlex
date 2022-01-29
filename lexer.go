@@ -586,10 +586,10 @@ func (s *Scanner) scanComment(ch rune) (rune, bool, bool) {
 // message to os.Stderr.
 func (s *Scanner) Scan() rune {
 	ch := s.Peek()
-	fmt.Println(string(ch))
+	fmt.Println("1", string(ch))
 	s.next()
 	ch = s.Peek()
-	fmt.Println(string(ch))
+	fmt.Println("2", string(ch))
 
 	// reset token text position
 	s.tokPos = -1
