@@ -696,6 +696,7 @@ redo:
 	s.tokEnd = s.srcPos - s.lastCharLen
 
 	s.ch = ch
+	fmt.Println("fintok:", string(tok))
 	return tok
 }
 
