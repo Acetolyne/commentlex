@@ -596,6 +596,7 @@ func (s *Scanner) scanComment(ch rune) (rune, bool, bool) {
 			ch = s.next()
 		} else {
 			SubCheck = ""
+			fmt.Println("CommentScanChValue:" + string(ch))
 			return ch, sval, mval
 		}
 
