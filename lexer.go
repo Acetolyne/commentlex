@@ -43,6 +43,29 @@ type CommentValues struct {
 	endMulti    string
 }
 
+//Initialize comment characters based on file extension
+//This may be more than one type per filetype as html can have javascript comment sin them as well
+var Extensions = []CommentValues{
+	{
+		ext:         []string{".go", ".py", ".js", ".rs", ".html", ".gohtml", ".php"},
+		startSingle: "//",
+		startMulti:  "/*",
+		endMulti:    "*/",
+	},
+	{
+		ext:         []string{".sh", ".php"},
+		startSingle: "#",
+		startMulti:  "",
+		endMulti:    "",
+	},
+	{
+		ext:         []string{".html", ".gohtml"},
+		startSingle: "",
+		startMulti:  "<!--",
+		endMulti:    "-->",
+	},
+}
+
 // IsValid reports whether the position is valid.
 func (pos *Position) IsValid() bool { return pos.Line > 0 }
 
@@ -584,12 +607,16 @@ func (s *Scanner) scanComment(ch rune) (rune, bool, bool) {
 // It returns EOF at the end of the source. It reports scanner errors (read and
 // token errors) by calling s.Error, if not nil; otherwise it prints an error
 // message to os.Stderr.
+
 func (s *Scanner) Scan() rune {
 	ch := s.Peek()
-	fmt.Println("1", string(ch))
-	s.next()
-	ch = s.Peek()
-	fmt.Println("2", string(ch))
+	fmt.Println(s.line, ":", s.column, string(ch))
+	ch = s.next()
+	fmt.Println(s.line, ":", s.column, string(ch))
+	ch = s.next()
+	fmt.Println(s.line, ":", s.column, string(ch))
+	// fmt.Println(s.column)
+	// fmt.Println(s.line)
 
 	// reset token text position
 	s.tokPos = -1
@@ -629,26 +656,7 @@ redo:
 		//Set the comment characters
 		//@todo read a file to get additional comment characters
 		//@todo add more file types and comment characters
-		Extensions := []CommentValues{
-			{
-				ext:         []string{".go", ".py", ".js", ".rs", ".html", ".gohtml", ".php"},
-				startSingle: "//",
-				startMulti:  "/*",
-				endMulti:    "*/",
-			},
-			{
-				ext:         []string{".sh", ".php"},
-				startSingle: "#",
-				startMulti:  "",
-				endMulti:    "",
-			},
-			{
-				ext:         []string{".html", ".gohtml"},
-				startSingle: "",
-				startMulti:  "<!--",
-				endMulti:    "-->",
-			},
-		}
+
 		for v := range Extensions {
 			ext := Extensions[v].ext
 			for e := range ext {
@@ -661,6 +669,7 @@ redo:
 						if s.Mode&SkipComments != 0 {
 							s.tokPos = -1 // don't collect token text
 							ch, isSingle, isMulti := s.scanComment(ch)
+							fmt.Println(string(ch))
 							if isSingle || isMulti {
 								tok = Comment
 							} else {
@@ -669,6 +678,7 @@ redo:
 							goto redo
 						}
 						ch, isSingle, isMulti := s.scanComment(ch)
+						fmt.Println(string(ch))
 						if isSingle || isMulti {
 							tok = Comment
 						} else {
