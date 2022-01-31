@@ -676,6 +676,7 @@ redo:
 							} else {
 								tok = ch
 							}
+							fmt.Println(string(tok))
 							goto redo
 						}
 						ch, isSingle, isMulti := s.scanComment(ch)
