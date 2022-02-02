@@ -670,9 +670,9 @@ redo:
 					s.CurMultiStart = Extensions[v].startMulti
 					s.CurMultiEnd = Extensions[v].endMulti
 					smatch := []rune(s.CurSingleComment)
-					//mmatch := []rune(s.CurMultiStart)
-					//If the current channel is the start of a single or multiline comment
-					if ch == smatch[0] {
+					mmatch := []rune(s.CurMultiStart)
+					//If the current channel is the start of a single line comment
+					if len(smatch) > 0 && string(smatch[0]) == string(ch) {
 						if s.Mode&SkipComments != 0 {
 							s.tokPos = -1 // don't collect token text
 							ch, isSingle, isMulti := s.scanComment(ch)
@@ -694,6 +694,17 @@ redo:
 							tok = ch
 						}
 
+					}
+					//If the current character might be the start of a multiline comment
+					if len(mmatch) > 0 && string(mmatch[0]) == string(ch) {
+						ch, isSingle, isMulti := s.scanComment(ch)
+						fmt.Println("HERE")
+						fmt.Println(string(ch))
+						if isSingle || isMulti {
+							tok = Comment
+						} else {
+							tok = ch
+						}
 					}
 				}
 			}
