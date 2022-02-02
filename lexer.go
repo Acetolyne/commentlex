@@ -661,7 +661,7 @@ redo:
 		//Set the comment characters
 		//@todo read a file to get additional comment characters
 		//@todo add more file types and comment characters
-
+		//@todo loop thru extensions in scanComment function instead
 		for v := range Extensions {
 			ext := Extensions[v].ext
 			for e := range ext {
@@ -670,9 +670,9 @@ redo:
 					s.CurMultiStart = Extensions[v].startMulti
 					s.CurMultiEnd = Extensions[v].endMulti
 					smatch := []rune(s.CurSingleComment)
-					mmatch := []rune(s.CurMultiStart)
+					//mmatch := []rune(s.CurMultiStart)
 					//If the current channel is the start of a single or multiline comment
-					if ch == smatch[0] || ch == mmatch[0] {
+					if ch == smatch[0] {
 						if s.Mode&SkipComments != 0 {
 							s.tokPos = -1 // don't collect token text
 							ch, isSingle, isMulti := s.scanComment(ch)
@@ -686,6 +686,7 @@ redo:
 							goto redo
 						}
 						ch, isSingle, isMulti := s.scanComment(ch)
+						fmt.Println("HERE")
 						fmt.Println(string(ch))
 						if isSingle || isMulti {
 							tok = Comment
