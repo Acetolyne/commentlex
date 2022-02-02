@@ -603,8 +603,14 @@ func digitVal(ch rune) int {
 // }
 
 //scanComment scans current line or lines and returns if it is a comment or not
-func (s *Scanner) scanComment(ch rune) (rune, bool, bool) {
-	return ch, true, true
+func (s *Scanner) scanComment(ch rune, t string) (rune, bool, bool) {
+	if t == "single" {
+		//@todo keep going until the newline
+		return ch, true, true
+	} else {
+		//@todo keep going until EOF or end of multiline comment
+		return ch, true, true
+	}
 }
 
 // Scan reads the next token or Unicode character from source and returns it.
@@ -676,7 +682,7 @@ redo:
 						fmt.Println("Possible Single")
 						if s.Mode&SkipComments != 0 {
 							s.tokPos = -1 // don't collect token text
-							ch, isSingle, isMulti := s.scanComment(ch)
+							ch, isSingle, isMulti := s.scanComment(ch, "single")
 							//fmt.Println(string(ch))
 							if isSingle || isMulti {
 								tok = Comment
@@ -686,7 +692,7 @@ redo:
 							//fmt.Println("REDO")
 							goto redo
 						}
-						ch, isSingle, isMulti := s.scanComment(ch)
+						ch, isSingle, isMulti := s.scanComment(ch, "single")
 						//fmt.Println("HERE")
 						//fmt.Println(string(ch))
 						if isSingle || isMulti {
@@ -699,7 +705,7 @@ redo:
 					//If the current character might be the start of a multiline comment
 					if len(mmatch) > 0 && string(mmatch[0]) == string(ch) {
 						fmt.Println("Possible Multi")
-						ch, isSingle, isMulti := s.scanComment(ch)
+						ch, isSingle, isMulti := s.scanComment(ch, "multi")
 						//fmt.Println("HERE")
 						//fmt.Println(string(ch))
 						if isSingle || isMulti {
