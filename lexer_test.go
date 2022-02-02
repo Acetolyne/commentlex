@@ -11,7 +11,13 @@ func TestTemp(t *testing.T) {
 	var s lexer.Scanner
 	s.Init("tests/test.go")
 	s.Mode = lexer.ScanComments
-	_ = s.Scan()
+	tok := s.Scan()
+	for tok != lexer.EOF {
+		if tok == lexer.Comment {
+			fmt.Println(s.TokenText())
+		}
+		tok = s.Scan()
+	}
 	fmt.Println(s.TokenText())
 
 }

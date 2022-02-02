@@ -20,7 +20,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 	"unicode"
 	"unicode/utf8"
 )
@@ -522,85 +521,90 @@ func digitVal(ch rune) int {
 	return 16 // larger than any legal digit val
 }
 
+// func (s *Scanner) scanComment(ch rune) (rune, bool, bool) {
+// 	x := 0
+// 	e := 0
+// 	s.singlePossible = true
+// 	s.multiPossible = true
+// 	var sval bool
+// 	var mval bool
+// 	match := s.CurSingleComment + s.Match
+// 	sMatch := []byte(string(match))
+// 	mMatch := []byte(string(s.CurMultiStart))
+// 	eMatch := []byte(string(s.CurMultiEnd))
+// 	var endval string
+// 	for {
+// 		//If there is a possibility that it is a single line comment based on the filetype
+// 		if s.singlePossible {
+// 			if ch != '\n' && ch >= 0 {
+// 				if x < len([]byte(string(sMatch))) {
+// 					if string(sMatch[x]) != string(ch) {
+// 						s.singlePossible = false
+// 					}
+// 				}
+// 			} else {
+// 				if x < len([]byte(string(sMatch)))-1 {
+// 					return ch, false, mval
+// 				} else {
+// 					return ch, true, mval
+// 				}
+// 			}
+// 		}
+// 		//If there is a possibility that it is a multi line comment based on the filetype
+// 		if s.multiPossible {
+// 			mval = false
+// 			//check for the start of the comment
+// 			if x < len([]byte(string(mMatch))) {
+// 				if string(mMatch[x]) != string(ch) {
+// 					SubCheck = ""
+// 					s.multiPossible = false
+// 				}
+// 			} else {
+// 				if ch < 0 {
+// 					SubCheck = ""
+// 					return ch, sval, false
+// 				}
+// 				if s.CurMultiEnd != "" && string(eMatch[e]) == string(ch) {
+// 					endval += string(ch)
+// 					e++
+// 				} else {
+// 					endval = ""
+// 					e = 0
+// 				}
+// 				if s.CurMultiEnd != "" && endval == s.CurMultiEnd {
+// 					e = 0
+// 					endval = ""
+// 					s.singlePossible = true
+// 					s.multiPossible = true
+// 					//fmt.Println("Matching: ", SubCheck, s.Match)
+// 					if strings.Contains(SubCheck, string(s.Match)) {
+// 						return ch, sval, true
+// 					} else {
+// 						SubCheck = ""
+// 						return ch, sval, false
+// 					}
+// 				}
+// 			}
+
+// 		}
+// 		if s.singlePossible || s.multiPossible {
+// 			if s.multiPossible {
+// 				SubCheck += string(ch)
+// 			}
+// 			x++
+// 			ch = s.next()
+// 		} else {
+// 			SubCheck = ""
+// 			fmt.Println("CommentScanChValue:" + string(ch))
+// 			return ch, sval, mval
+// 		}
+
+// 	}
+// }
+
+//scanComment scans current line or lines and returns if it is a comment or not
 func (s *Scanner) scanComment(ch rune) (rune, bool, bool) {
-	x := 0
-	e := 0
-	s.singlePossible = true
-	s.multiPossible = true
-	var sval bool
-	var mval bool
-	match := s.CurSingleComment + s.Match
-	sMatch := []byte(string(match))
-	mMatch := []byte(string(s.CurMultiStart))
-	eMatch := []byte(string(s.CurMultiEnd))
-	var endval string
-	for {
-		//If there is a possibility that it is a single line comment based on the filetype
-		if s.singlePossible {
-			if ch != '\n' && ch >= 0 {
-				if x < len([]byte(string(sMatch))) {
-					if string(sMatch[x]) != string(ch) {
-						s.singlePossible = false
-					}
-				}
-			} else {
-				if x < len([]byte(string(sMatch)))-1 {
-					return ch, false, mval
-				} else {
-					return ch, true, mval
-				}
-			}
-		}
-		//If there is a possibility that it is a multi line comment based on the filetype
-		if s.multiPossible {
-			mval = false
-			//check for the start of the comment
-			if x < len([]byte(string(mMatch))) {
-				if string(mMatch[x]) != string(ch) {
-					SubCheck = ""
-					s.multiPossible = false
-				}
-			} else {
-				if ch < 0 {
-					SubCheck = ""
-					return ch, sval, false
-				}
-				if s.CurMultiEnd != "" && string(eMatch[e]) == string(ch) {
-					endval += string(ch)
-					e++
-				} else {
-					endval = ""
-					e = 0
-				}
-				if s.CurMultiEnd != "" && endval == s.CurMultiEnd {
-					e = 0
-					endval = ""
-					s.singlePossible = true
-					s.multiPossible = true
-					//fmt.Println("Matching: ", SubCheck, s.Match)
-					if strings.Contains(SubCheck, string(s.Match)) {
-						return ch, sval, true
-					} else {
-						SubCheck = ""
-						return ch, sval, false
-					}
-				}
-			}
-
-		}
-		if s.singlePossible || s.multiPossible {
-			if s.multiPossible {
-				SubCheck += string(ch)
-			}
-			x++
-			ch = s.next()
-		} else {
-			SubCheck = ""
-			fmt.Println("CommentScanChValue:" + string(ch))
-			return ch, sval, mval
-		}
-
-	}
+	return ch, true, true
 }
 
 // Scan reads the next token or Unicode character from source and returns it.
@@ -676,7 +680,7 @@ redo:
 							} else {
 								tok = ch
 							}
-							fmt.Println(string(tok))
+							fmt.Println("REDO")
 							goto redo
 						}
 						ch, isSingle, isMulti := s.scanComment(ch)
