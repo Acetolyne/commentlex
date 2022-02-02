@@ -669,8 +669,10 @@ redo:
 					s.CurSingleComment = Extensions[v].startSingle
 					s.CurMultiStart = Extensions[v].startMulti
 					s.CurMultiEnd = Extensions[v].endMulti
-					result := []rune(s.CurSingleComment)
-					if ch == result[0] {
+					smatch := []rune(s.CurSingleComment)
+					mmatch := []rune(s.CurMultiStart)
+					//If the current channel is the start of a single or multiline comment
+					if ch == smatch[0] || ch == mmatch[0] {
 						if s.Mode&SkipComments != 0 {
 							s.tokPos = -1 // don't collect token text
 							ch, isSingle, isMulti := s.scanComment(ch)
