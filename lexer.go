@@ -603,13 +603,18 @@ func digitVal(ch rune) int {
 // }
 
 //scanComment scans current line or lines and returns if it is a comment or not
-func (s *Scanner) scanComment(ch rune, t string) (rune, bool, bool) {
+func (s *Scanner) scanComment(ch rune, t string) rune {
 	if t == "single" {
 		//@todo keep going until the newline
-		return ch, true, true
+		for ch != '\n' && ch >= 0 {
+			//if ch matches the single comment characters plus any matching characters
+			//return Comment
+			s.next()
+		}
+		return ch
 	} else {
 		//@todo keep going until EOF or end of multiline comment
-		return ch, true, true
+		return ch
 	}
 }
 
@@ -633,7 +638,7 @@ func (s *Scanner) Scan() rune {
 	s.tokPos = -1
 	s.Line = 0
 
-redo:
+	//redo:
 	// skip white space
 	for s.Whitespace&(1<<uint(ch)) != 0 {
 		ch = s.next()
@@ -680,39 +685,48 @@ redo:
 					//If the current channel is the start of a single line comment
 					if len(smatch) > 0 && string(smatch[0]) == string(ch) {
 						fmt.Println("Possible Single")
-						if s.Mode&SkipComments != 0 {
-							s.tokPos = -1 // don't collect token text
-							ch, isSingle, isMulti := s.scanComment(ch, "single")
-							//fmt.Println(string(ch))
-							if isSingle || isMulti {
-								tok = Comment
-							} else {
-								tok = ch
-							}
-							//fmt.Println("REDO")
-							goto redo
-						}
-						ch, isSingle, isMulti := s.scanComment(ch, "single")
+						// if s.Mode&SkipComments != 0 {
+						// 	s.tokPos = -1 // don't collect token text
+						// 	tok := s.scanComment(ch, "single")
+						// 	s.tokEnd = s.srcPos - s.lastCharLen
+						// 	s.ch = ch
+						// 	//return tok
+						// 	//fmt.Println(string(ch))
+						// 	// if isSingle || isMulti {
+						// 	// 	tok = Comment
+						// 	// } else {
+						// 	// 	tok = ch
+						// 	// }
+						// 	//fmt.Println("REDO")
+						// 	goto redo
+						// }
+						tok := s.scanComment(ch, "single")
+						s.tokEnd = s.srcPos - s.lastCharLen
+						s.ch = ch
+						return tok
 						//fmt.Println("HERE")
-						//fmt.Println(string(ch))
-						if isSingle || isMulti {
-							tok = Comment
-						} else {
-							tok = ch
-						}
+						// //fmt.Println(string(ch))
+						// if isSingle || isMulti {
+						// 	tok = Comment
+						// } else {
+						// 	tok = ch
+						// }
 
 					}
 					//If the current character might be the start of a multiline comment
 					if len(mmatch) > 0 && string(mmatch[0]) == string(ch) {
 						fmt.Println("Possible Multi")
-						ch, isSingle, isMulti := s.scanComment(ch, "multi")
+						tok := s.scanComment(ch, "multi")
+						s.tokEnd = s.srcPos - s.lastCharLen
+						s.ch = ch
+						return tok
 						//fmt.Println("HERE")
 						//fmt.Println(string(ch))
-						if isSingle || isMulti {
-							tok = Comment
-						} else {
-							tok = ch
-						}
+						// if isSingle || isMulti {
+						// 	tok = Comment
+						// } else {
+						// 	tok = ch
+						// }
 					}
 				}
 			}
@@ -724,7 +738,6 @@ redo:
 	s.tokEnd = s.srcPos - s.lastCharLen
 
 	s.ch = ch
-	fmt.Println("fintok:", string(tok))
 	return tok
 }
 
