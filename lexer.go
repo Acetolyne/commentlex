@@ -611,7 +611,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			//return Comment
 			s.next()
 		}
-		return ch
+		return Comment
 	} else {
 		//@todo keep going until EOF or end of multiline comment
 		return ch
