@@ -609,7 +609,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		for ch != '\n' && ch >= 0 {
 			//if ch matches the single comment characters plus any matching characters
 			//return Comment
-			s.next()
+			ch = s.next()
 		}
 		return Comment
 	} else {
@@ -701,6 +701,7 @@ func (s *Scanner) Scan() rune {
 						// 	goto redo
 						// }
 						tok := s.scanComment(ch, "single")
+						fmt.Println(tok)
 						s.tokEnd = s.srcPos - s.lastCharLen
 						s.ch = ch
 						return tok
