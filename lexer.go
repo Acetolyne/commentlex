@@ -614,12 +614,12 @@ func (s *Scanner) scanComment(ch rune) (rune, bool, bool) {
 // message to os.Stderr.
 
 func (s *Scanner) Scan() rune {
-	ch := s.Peek()
-	fmt.Println(s.line, ":", s.column, string(ch))
-	ch = s.next()
-	fmt.Println(s.line, ":", s.column, string(ch))
-	ch = s.next()
-	fmt.Println(s.line, ":", s.column, string(ch))
+	ch := s.next()
+	// fmt.Println(s.line, ":", s.column, string(ch))
+	// ch = s.next()
+	// fmt.Println(s.line, ":", s.column, string(ch))
+	// ch = s.next()
+	// fmt.Println(s.line, ":", s.column, string(ch))
 	// fmt.Println(s.column)
 	// fmt.Println(s.line)
 
@@ -673,21 +673,22 @@ redo:
 					mmatch := []rune(s.CurMultiStart)
 					//If the current channel is the start of a single line comment
 					if len(smatch) > 0 && string(smatch[0]) == string(ch) {
+						fmt.Println("Possible Single")
 						if s.Mode&SkipComments != 0 {
 							s.tokPos = -1 // don't collect token text
 							ch, isSingle, isMulti := s.scanComment(ch)
-							fmt.Println(string(ch))
+							//fmt.Println(string(ch))
 							if isSingle || isMulti {
 								tok = Comment
 							} else {
 								tok = ch
 							}
-							fmt.Println("REDO")
+							//fmt.Println("REDO")
 							goto redo
 						}
 						ch, isSingle, isMulti := s.scanComment(ch)
-						fmt.Println("HERE")
-						fmt.Println(string(ch))
+						//fmt.Println("HERE")
+						//fmt.Println(string(ch))
 						if isSingle || isMulti {
 							tok = Comment
 						} else {
@@ -697,9 +698,10 @@ redo:
 					}
 					//If the current character might be the start of a multiline comment
 					if len(mmatch) > 0 && string(mmatch[0]) == string(ch) {
+						fmt.Println("Possible Multi")
 						ch, isSingle, isMulti := s.scanComment(ch)
-						fmt.Println("HERE")
-						fmt.Println(string(ch))
+						//fmt.Println("HERE")
+						//fmt.Println(string(ch))
 						if isSingle || isMulti {
 							tok = Comment
 						} else {
