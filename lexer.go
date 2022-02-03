@@ -609,6 +609,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	if t == "single" {
 		//@todo keep going until the newline
 		//fmt.Println(s.line, ":", s.column, string(ch))
+		curcol := s.column
 		for v := range Extensions {
 			s.CurSingleComment = Extensions[v].startSingle
 			s.CurMultiStart = Extensions[v].startMulti
@@ -621,9 +622,11 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 						for x := range smatch {
 							//fmt.Println(string(smatch[x]), string(ch))
 							if string(smatch[x]) != string(ch) {
+								ch = s.next()
+							} else {
+								s.column = curcol
 								break
 							}
-							ch = s.next()
 						}
 						return Comment
 
