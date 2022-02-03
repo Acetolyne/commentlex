@@ -619,10 +619,12 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				if ext[e] == s.srcType {
 					for ch != '\n' && ch >= 0 {
 						for x := range smatch {
+							fmt.Println(string(smatch[x]), string(ch))
 							if string(smatch[x]) != string(ch) {
 								return ch
 							}
 						}
+						return Comment
 
 						//get current pos
 						//for cur extension iterate checking that each character matches
@@ -630,12 +632,12 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 						//if it no longer matches reset positon for next extension
 						//if ch matches the single comment characters plus any matching characters
 						//return Comment
-						ch = s.next()
+						//ch = s.next()
 					}
 				}
 			}
 		}
-		return Comment
+		return ch
 	} else {
 		//@todo keep going until EOF or end of multiline comment
 		return ch
