@@ -606,10 +606,18 @@ func digitVal(ch rune) int {
 func (s *Scanner) scanComment(ch rune, t string) rune {
 	if t == "single" {
 		//@todo keep going until the newline
-		for ch != '\n' && ch >= 0 {
-			//if ch matches the single comment characters plus any matching characters
-			//return Comment
-			ch = s.next()
+		for v := range Extensions {
+			ext := Extensions[v].ext
+			for e := range ext {
+				if ext[e] == s.srcType {
+
+					for ch != '\n' && ch >= 0 {
+						//if ch matches the single comment characters plus any matching characters
+						//return Comment
+						ch = s.next()
+					}
+				}
+			}
 		}
 		return Comment
 	} else {
@@ -673,66 +681,60 @@ func (s *Scanner) Scan() rune {
 		//@todo read a file to get additional comment characters
 		//@todo add more file types and comment characters
 		//@todo loop thru extensions in scanComment function instead
-		for v := range Extensions {
-			ext := Extensions[v].ext
-			for e := range ext {
-				if ext[e] == s.srcType {
-					s.CurSingleComment = Extensions[v].startSingle
-					s.CurMultiStart = Extensions[v].startMulti
-					s.CurMultiEnd = Extensions[v].endMulti
-					smatch := []rune(s.CurSingleComment)
-					mmatch := []rune(s.CurMultiStart)
-					//If the current channel is the start of a single line comment
-					if len(smatch) > 0 && string(smatch[0]) == string(ch) {
-						fmt.Println("Possible Single")
-						// if s.Mode&SkipComments != 0 {
-						// 	s.tokPos = -1 // don't collect token text
-						// 	tok := s.scanComment(ch, "single")
-						// 	s.tokEnd = s.srcPos - s.lastCharLen
-						// 	s.ch = ch
-						// 	//return tok
-						// 	//fmt.Println(string(ch))
-						// 	// if isSingle || isMulti {
-						// 	// 	tok = Comment
-						// 	// } else {
-						// 	// 	tok = ch
-						// 	// }
-						// 	//fmt.Println("REDO")
-						// 	goto redo
-						// }
-						tok := s.scanComment(ch, "single")
-						fmt.Println(tok)
-						s.tokEnd = s.srcPos - s.lastCharLen
-						s.ch = ch
-						return tok
-						//fmt.Println("HERE")
-						// //fmt.Println(string(ch))
-						// if isSingle || isMulti {
-						// 	tok = Comment
-						// } else {
-						// 	tok = ch
-						// }
 
-					}
-					//If the current character might be the start of a multiline comment
-					if len(mmatch) > 0 && string(mmatch[0]) == string(ch) {
-						fmt.Println("Possible Multi")
-						tok := s.scanComment(ch, "multi")
-						s.tokEnd = s.srcPos - s.lastCharLen
-						s.ch = ch
-						return tok
-						//fmt.Println("HERE")
-						//fmt.Println(string(ch))
-						// if isSingle || isMulti {
-						// 	tok = Comment
-						// } else {
-						// 	tok = ch
-						// }
-					}
-				}
-			}
-		}
+		// s.CurSingleComment = Extensions[v].startSingle
+		// s.CurMultiStart = Extensions[v].startMulti
+		// s.CurMultiEnd = Extensions[v].endMulti
+		// smatch := []rune(s.CurSingleComment)
+		// mmatch := []rune(s.CurMultiStart)
+		//If the current channel is the start of a single line comment
+		fmt.Println("Possible Single")
+		// if s.Mode&SkipComments != 0 {
+		// 	s.tokPos = -1 // don't collect token text
+		// 	tok := s.scanComment(ch, "single")
+		// 	s.tokEnd = s.srcPos - s.lastCharLen
+		// 	s.ch = ch
+		// 	//return tok
+		// 	//fmt.Println(string(ch))
+		// 	// if isSingle || isMulti {
+		// 	// 	tok = Comment
+		// 	// } else {
+		// 	// 	tok = ch
+		// 	// }
+		// 	//fmt.Println("REDO")
+		// 	goto redo
+		// }
+		tok := s.scanComment(ch, "single")
+		//fmt.Println(tok)
+		s.tokEnd = s.srcPos - s.lastCharLen
+		s.ch = ch
 		ch = s.next()
+		return tok
+		//fmt.Println("HERE")
+		// //fmt.Println(string(ch))
+		// if isSingle || isMulti {
+		// 	tok = Comment
+		// } else {
+		// 	tok = ch
+		// }
+
+		//}
+		//If the current character might be the start of a multiline comment
+		// if len(mmatch) > 0 && string(mmatch[0]) == string(ch) {
+		// 	fmt.Println("Possible Multi")
+		// 	tok := s.scanComment(ch, "multi")
+		// 	s.tokEnd = s.srcPos - s.lastCharLen
+		// 	s.ch = ch
+		// 	return tok
+		// 	//fmt.Println("HERE")
+		// 	//fmt.Println(string(ch))
+		// 	// if isSingle || isMulti {
+		// 	// 	tok = Comment
+		// 	// } else {
+		// 	// 	tok = ch
+		// 	// }
+		// }
+		//ch = s.next()
 	}
 
 	// end of token text
