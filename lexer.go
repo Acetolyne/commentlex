@@ -621,11 +621,11 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 						for x := range smatch {
 							//fmt.Println(string(smatch[x]), string(ch))
 							if string(smatch[x]) != string(ch) {
-								return ch
+								break
 							}
 							ch = s.next()
 						}
-						return Comment
+						//return Comment
 
 						//get current pos
 						//for cur extension iterate checking that each character matches
@@ -637,6 +637,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 					}
 				}
 			}
+			return Comment
 		}
 		return ch
 	} else {
