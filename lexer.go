@@ -608,7 +608,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	//mmatch := []rune(s.CurMultiStart)
 	if t == "single" {
 		//@todo keep going until the newline
-		fmt.Println(s.line, ":", s.column, string(ch))
+		//fmt.Println(s.line, ":", s.column, string(ch))
 		for v := range Extensions {
 			s.CurSingleComment = Extensions[v].startSingle
 			s.CurMultiStart = Extensions[v].startMulti
@@ -619,7 +619,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				if ext[e] == s.srcType {
 					for ch != '\n' && ch >= 0 {
 						for x := range smatch {
-							fmt.Println(string(smatch[x]), string(ch))
+							//fmt.Println(string(smatch[x]), string(ch))
 							if string(smatch[x]) != string(ch) {
 								return ch
 							}
@@ -707,7 +707,7 @@ func (s *Scanner) Scan() rune {
 		// smatch := []rune(s.CurSingleComment)
 		// mmatch := []rune(s.CurMultiStart)
 		//If the current channel is the start of a single line comment
-		fmt.Println("Possible Single")
+		//fmt.Println("Possible Single")
 		// if s.Mode&SkipComments != 0 {
 		// 	s.tokPos = -1 // don't collect token text
 		// 	tok := s.scanComment(ch, "single")
