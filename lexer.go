@@ -619,9 +619,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				if ext[e] == s.srcType {
 					for ch != '\n' && ch >= 0 {
 						for x := range smatch {
-							if string(smatch[x]) == string(ch) {
-								ch = s.next()
-							} else {
+							if string(smatch[x]) != string(ch) {
 								return ch
 							}
 						}
