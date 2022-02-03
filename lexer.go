@@ -623,6 +623,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 							if string(smatch[x]) != string(ch) {
 								return ch
 							}
+							ch = s.next()
 						}
 						return Comment
 
