@@ -647,6 +647,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			}
 		}
 	}
+	return ch
 }
 
 // Scan reads the next token or Unicode character from source and returns it.
