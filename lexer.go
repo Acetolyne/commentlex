@@ -609,43 +609,44 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	//@todo keep going until the newline
 	//fmt.Println(s.line, ":", s.column, string(ch))
 	//curcol := s.column
-	for ch != EOF {
-		for v := range Extensions {
-			s.CurSingleComment = Extensions[v].startSingle
-			s.CurMultiStart = Extensions[v].startMulti
-			s.CurMultiEnd = Extensions[v].endMulti
-			//smatch := []rune(s.CurSingleComment)
-			ext := Extensions[v].ext
-			for e := range ext {
-				if ext[e] == s.srcType {
-					for ch != '\n' && ch >= 0 {
-						// for x := range smatch {
-						// 	//fmt.Println(string(smatch[x]), string(ch))
-						// 	if string(smatch[x]) != string(ch) {
-						// 		return ch
-						// 	} else {
-						// 		s.column = curcol
-						// 		break
-						// 	}
-						// }
-						//ch = s.next()
-						//return Comment
+	for v := range Extensions {
+		fmt.Println("Extension#", v)
+		s.CurSingleComment = Extensions[v].startSingle
+		s.CurMultiStart = Extensions[v].startMulti
+		s.CurMultiEnd = Extensions[v].endMulti
+		//smatch := []rune(s.CurSingleComment)
+		ext := Extensions[v].ext
+		for e := range ext {
+			fmt.Println("Current filetype:", ext[e])
+			//Reset the position to begining of same line
+			//s.tokPos = -1
+			if ext[e] == s.srcType {
+				for ch != '\n' && ch >= 0 {
+					// for x := range smatch {
+					// 	//fmt.Println(string(smatch[x]), string(ch))
+					// 	if string(smatch[x]) != string(ch) {
+					// 		return ch
+					// 	} else {
+					// 		s.column = curcol
+					// 		break
+					// 	}
+					// }
+					//ch = s.next()
+					//return Comment
 
-						//get current pos
-						//for cur extension iterate checking that each character matches
-						//if it dies return comment
-						//if it no longer matches reset positon for next extension
-						//if ch matches the single comment characters plus any matching characters
-						//return Comment
-						ch = s.next()
+					//get current pos
+					//for cur extension iterate checking that each character matches
+					//if it dies return comment
+					//if it no longer matches reset positon for next extension
+					//if ch matches the single comment characters plus any matching characters
+					//return Comment
+					ch = s.next()
 
-					}
-					return Comment
 				}
+				return Comment
 			}
 		}
 	}
-	return ch
 }
 
 // Scan reads the next token or Unicode character from source and returns it.
@@ -730,7 +731,7 @@ func (s *Scanner) Scan() rune {
 		//fmt.Println(tok)
 		s.tokEnd = s.srcPos - s.lastCharLen
 		s.ch = ch
-		ch = s.next()
+		//ch = s.next()
 		return tok
 		//fmt.Println("HERE")
 		// //fmt.Println(string(ch))
