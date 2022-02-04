@@ -609,42 +609,41 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	if t == "single" {
 		//@todo keep going until the newline
 		//fmt.Println(s.line, ":", s.column, string(ch))
-		curcol := s.column
+		//curcol := s.column
+		for v := range Extensions {
+			s.CurSingleComment = Extensions[v].startSingle
+			s.CurMultiStart = Extensions[v].startMulti
+			s.CurMultiEnd = Extensions[v].endMulti
+			//smatch := []rune(s.CurSingleComment)
+			ext := Extensions[v].ext
+			for e := range ext {
+				if ext[e] == s.srcType {
+					for ch != '\n' && ch >= 0 {
+						// for x := range smatch {
+						// 	//fmt.Println(string(smatch[x]), string(ch))
+						// 	if string(smatch[x]) != string(ch) {
+						// 		return ch
+						// 	} else {
+						// 		s.column = curcol
+						// 		break
+						// 	}
+						// }
+						//ch = s.next()
+						//return Comment
 
-		for ch != '\n' && ch >= 0 {
-			for v := range Extensions {
-				ext := Extensions[v].ext
-				for e := range ext {
-					if ext[e] == s.srcType {
-						s.CurSingleComment = Extensions[v].startSingle
-						s.CurMultiStart = Extensions[v].startMulti
-						s.CurMultiEnd = Extensions[v].endMulti
-						smatch := []rune(s.CurSingleComment)
-						for x := range smatch {
-							//fmt.Println(string(smatch[x]), string(ch))
-							if string(smatch[x]) != string(ch) {
-								ch = s.next()
-							} else {
-								s.column = curcol
-								break
-							}
-						}
+						//get current pos
+						//for cur extension iterate checking that each character matches
+						//if it dies return comment
+						//if it no longer matches reset positon for next extension
+						//if ch matches the single comment characters plus any matching characters
+						//return Comment
+						ch = s.next()
+
 					}
+					return Comment
 				}
 			}
-			return Comment
-
-			//get current pos
-			//for cur extension iterate checking that each character matches
-			//if it dies return comment
-			//if it no longer matches reset positon for next extension
-			//if ch matches the single comment characters plus any matching characters
-			//return Comment
-			//ch = s.next()
 		}
-		// 		}
-		// 	}
-		// }
 		return ch
 	} else {
 		//@todo keep going until EOF or end of multiline comment
