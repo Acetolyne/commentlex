@@ -626,10 +626,15 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				fmt.Println("MATCHEXT", ext[e], s.srcType)
 
 				// 		for ch != '\n' && ch >= 0 {
+				curpos := s.tokPos
 				for x := range smatch {
 					if string(smatch[x]) == string(ch) {
 						fmt.Println("MATCHCHAR", string(smatch[x]), string(ch))
+						ch = s.next()
+					} else {
+						s.tokPos = curpos
 					}
+
 					// 				fmt.Println(string(smatch[x]), string(ch))
 					// 				// if string(smatch[x]) != string(ch) {
 					// 				// 	break
