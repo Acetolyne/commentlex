@@ -632,8 +632,10 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 						} else {
 							//fmt.Println("MATCHCHAR", string(smatch[x]), string(ch))
 							ch = s.next()
+							fmt.Println(string(ch))
 						}
 					} else {
+						fmt.Println("Changing position from", s.tokPos, "to", curpos)
 						s.tokPos = curpos
 					}
 
