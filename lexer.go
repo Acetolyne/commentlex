@@ -610,7 +610,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	//fmt.Println(s.line, ":", s.column, string(ch))
 	//curcol := s.column
 	for v := range Extensions {
-		fmt.Println("Extension#", v, ":", Extensions[v], string(ch))
+		fmt.Println("Extension#", v, ":", Extensions[v], string(ch), s.tokPos)
 		// s.CurSingleComment = Extensions[v].startSingle
 		// s.CurMultiStart = Extensions[v].startMulti
 		// s.CurMultiEnd = Extensions[v].endMulti
