@@ -622,7 +622,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				smatch := []rune(s.CurSingleComment)
 
 				// 		for ch != '\n' && ch >= 0 {
-				curpos := s.tokPos
+				//curpos := s.tokPos
 				for ch != '\n' && ch >= 0 {
 					for x := range smatch {
 						if string(smatch[x]) == string(ch) {
@@ -634,8 +634,6 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 								//fmt.Println("MATCHCHAR", string(smatch[x]), string(ch))
 								ch = s.next()
 							}
-						} else {
-							s.tokPos = curpos
 						}
 
 						// 				fmt.Println(string(smatch[x]), string(ch))
