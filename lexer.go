@@ -614,37 +614,42 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		s.CurSingleComment = Extensions[v].startSingle
 		s.CurMultiStart = Extensions[v].startMulti
 		s.CurMultiEnd = Extensions[v].endMulti
-		// smatch := []rune(s.CurSingleComment)
+
 		ext := Extensions[v].ext
 		for e := range ext {
+
 			fmt.Println("Current filetype:", ext[e])
 			// 	//Reset the position to begining of same line
 			// 	//s.tokPos = -1
 			if ext[e] == s.srcType {
-				fmt.Println("MATCH", ext[e], s.srcType)
+				smatch := []rune(s.CurSingleComment)
+				fmt.Println("MATCHEXT", ext[e], s.srcType)
 
 				// 		for ch != '\n' && ch >= 0 {
-				// 			for x := range smatch {
-				// 				fmt.Println(string(smatch[x]), string(ch))
-				// 				// if string(smatch[x]) != string(ch) {
-				// 				// 	break
-				// 				// 	// 	} else {
-				// 				// 	// 		s.column = curcol
-				// 				// 	// 		break
-				// 				// }
-				// 			}
-				// 			//ch = s.next()
-				// 			//return Comment
+				for x := range smatch {
+					if string(smatch[x]) == string(ch) {
+						fmt.Println("MATCHCHAR", string(smatch[x]), string(ch))
+					}
+					// 				fmt.Println(string(smatch[x]), string(ch))
+					// 				// if string(smatch[x]) != string(ch) {
+					// 				// 	break
+					// 				// 	// 	} else {
+					// 				// 	// 		s.column = curcol
+					// 				// 	// 		break
+					// 				// }
+					// 			}
+					// 			//ch = s.next()
+					// 			//return Comment
 
-				// 			//get current pos
-				// 			//for cur extension iterate checking that each character matches
-				// 			//if it dies return comment
-				// 			//if it no longer matches reset positon for next extension
-				// 			//if ch matches the single comment characters plus any matching characters
-				// 			//return Comment
-				// 			ch = s.next()
+					// 			//get current pos
+					// 			//for cur extension iterate checking that each character matches
+					// 			//if it dies return comment
+					// 			//if it no longer matches reset positon for next extension
+					// 			//if ch matches the single comment characters plus any matching characters
+					// 			//return Comment
+					// 			ch = s.next()
 
-				// 		}
+				}
 				// 		//ch = Comment
 			}
 		}
