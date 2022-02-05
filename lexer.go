@@ -623,40 +623,43 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 
 				// 		for ch != '\n' && ch >= 0 {
 				curpos := s.tokPos
-				for x := range smatch {
-					if string(smatch[x]) == string(ch) {
-						fmt.Println("at position", x, "of", len(smatch))
-						//If we have reached the end of the singlecomment characters and they all match return Comment else just keep iterating over the characters
-						if x == len(smatch)-1 {
-							return Comment
+				for ch != '\n' && ch >= 0 {
+					for x := range smatch {
+						if string(smatch[x]) == string(ch) {
+							fmt.Println("at position", x, "of", len(smatch))
+							//If we have reached the end of the singlecomment characters and they all match return Comment else just keep iterating over the characters
+							if x == len(smatch)-1 {
+								return Comment
+							} else {
+								//fmt.Println("MATCHCHAR", string(smatch[x]), string(ch))
+								ch = s.next()
+							}
 						} else {
-							//fmt.Println("MATCHCHAR", string(smatch[x]), string(ch))
-							ch = s.next()
+							s.tokPos = curpos
 						}
-					} else {
-						s.tokPos = curpos
+
+						// 				fmt.Println(string(smatch[x]), string(ch))
+						// 				// if string(smatch[x]) != string(ch) {
+						// 				// 	break
+						// 				// 	// 	} else {
+						// 				// 	// 		s.column = curcol
+						// 				// 	// 		break
+						// 				// }
+						// 			}
+						// 			//ch = s.next()
+						// 			//return Comment
+
+						// 			//get current pos
+						// 			//for cur extension iterate checking that each character matches
+						// 			//if it dies return comment
+						// 			//if it no longer matches reset positon for next extension
+						// 			//if ch matches the single comment characters plus any matching characters
+						// 			//return Comment
+						// 			ch = s.next()
+
 					}
-
-					// 				fmt.Println(string(smatch[x]), string(ch))
-					// 				// if string(smatch[x]) != string(ch) {
-					// 				// 	break
-					// 				// 	// 	} else {
-					// 				// 	// 		s.column = curcol
-					// 				// 	// 		break
-					// 				// }
-					// 			}
-					// 			//ch = s.next()
-					// 			//return Comment
-
-					// 			//get current pos
-					// 			//for cur extension iterate checking that each character matches
-					// 			//if it dies return comment
-					// 			//if it no longer matches reset positon for next extension
-					// 			//if ch matches the single comment characters plus any matching characters
-					// 			//return Comment
-					// 			ch = s.next()
-
 				}
+				return ch
 				// 		//ch = Comment
 			}
 		}
