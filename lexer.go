@@ -626,8 +626,13 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				for x := range smatch {
 					fmt.Println("CURCH", string(ch))
 					if string(smatch[x]) == string(ch) {
-						fmt.Println("MATCHCHAR", string(smatch[x]), string(ch))
-						ch = s.next()
+						//If we have reached the end of the singlecomment characters and they all match return Comment else just keep iterating over the characters
+						if x == len(smatch)-1 {
+							return Comment
+						} else {
+							//fmt.Println("MATCHCHAR", string(smatch[x]), string(ch))
+							ch = s.next()
+						}
 					} else {
 						s.tokPos = curpos
 					}
