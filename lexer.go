@@ -614,7 +614,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		s.CurSingleComment = Extensions[v].startSingle
 		s.CurMultiStart = Extensions[v].startMulti
 		s.CurMultiEnd = Extensions[v].endMulti
-		//smatch := []rune(s.CurSingleComment)
+		smatch := []rune(s.CurSingleComment)
 		ext := Extensions[v].ext
 		for e := range ext {
 			fmt.Println("Current filetype:", ext[e])
@@ -622,15 +622,15 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			//s.tokPos = -1
 			if ext[e] == s.srcType {
 				for ch != '\n' && ch >= 0 {
-					// for x := range smatch {
-					// 	//fmt.Println(string(smatch[x]), string(ch))
-					// 	if string(smatch[x]) != string(ch) {
-					// 		return ch
-					// 	} else {
-					// 		s.column = curcol
-					// 		break
-					// 	}
-					// }
+					for x := range smatch {
+						fmt.Println(string(smatch[x]), string(ch))
+						if string(smatch[x]) != string(ch) {
+							break
+							// 	} else {
+							// 		s.column = curcol
+							// 		break
+						}
+					}
 					//ch = s.next()
 					//return Comment
 
@@ -643,7 +643,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 					ch = s.next()
 
 				}
-				return Comment
+				//ch = Comment
 			}
 		}
 	}
