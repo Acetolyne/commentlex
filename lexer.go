@@ -610,24 +610,21 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	//fmt.Println(s.line, ":", s.column, string(ch))
 	//curcol := s.column
 	for v := range Extensions {
-		fmt.Println("Extension#", v, ":", Extensions[v], string(ch), s.tokPos)
 		s.CurSingleComment = Extensions[v].startSingle
 		s.CurMultiStart = Extensions[v].startMulti
 		s.CurMultiEnd = Extensions[v].endMulti
 
 		ext := Extensions[v].ext
 		for e := range ext {
-
-			fmt.Println("Current filetype:", ext[e])
 			// 	//Reset the position to begining of same line
 			// 	//s.tokPos = -1
 			if ext[e] == s.srcType {
 				smatch := []rune(s.CurSingleComment)
-				fmt.Println("MATCHEXT", ext[e], s.srcType)
 
 				// 		for ch != '\n' && ch >= 0 {
 				curpos := s.tokPos
 				for x := range smatch {
+					fmt.Println("CURCH", string(ch))
 					if string(smatch[x]) == string(ch) {
 						fmt.Println("MATCHCHAR", string(smatch[x]), string(ch))
 						ch = s.next()
