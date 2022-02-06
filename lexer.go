@@ -663,6 +663,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			}
 			ch = s.next()
 		}
+		ch = s.next()
 	}
 	return ch
 }
