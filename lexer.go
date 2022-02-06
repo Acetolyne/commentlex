@@ -622,10 +622,17 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	// 		ch = s.next()
 	// 	}
 	// }
-	for ch != '\n' && ch >= 0 {
-		ch = s.next()
+	singlePos := 0
+	//MultiStartPos := 0
+	//MultiEndPos := 0
+	if singlePos >= 0 {
+		for ch != '\n' && ch >= 0 {
+			ch = s.next()
+		}
+		return Comment
+	} else {
+		return ch
 	}
-	return Comment
 
 	//ext := Extensions[v].ext
 	//for e := range ext {
@@ -760,6 +767,7 @@ func (s *Scanner) Scan() rune {
 		// 	//fmt.Println("REDO")
 		// 	goto redo
 		// }
+		//@todo only scan if ext is the filetype
 		tok := s.scanComment(ch, "single")
 		//fmt.Println(tok)
 		s.tokEnd = s.srcPos - s.lastCharLen
