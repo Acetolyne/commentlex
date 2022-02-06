@@ -615,13 +615,14 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	// 	s.CurMultiStart = Extensions[v].startMulti
 	// 	s.CurMultiEnd = Extensions[v].endMulti
 
-	for {
-		if ch != '\n' && ch >= 0 {
-			return Comment
-		} else {
-			ch = s.next()
-		}
-	}
+	// for {
+	// 	if ch != '\n' && ch >= 0 {
+	// 		return Comment
+	// 	} else {
+	// 		ch = s.next()
+	// 	}
+	// }
+	return Comment
 
 	//ext := Extensions[v].ext
 	//for e := range ext {
