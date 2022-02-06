@@ -610,70 +610,70 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	//fmt.Println(s.line, ":", s.column, string(ch))
 	//curcol := s.column
 	//x := 0
-	for v := range Extensions {
-		s.CurSingleComment = Extensions[v].startSingle
-		s.CurMultiStart = Extensions[v].startMulti
-		s.CurMultiEnd = Extensions[v].endMulti
+	// for v := range Extensions {
+	// 	s.CurSingleComment = Extensions[v].startSingle
+	// 	s.CurMultiStart = Extensions[v].startMulti
+	// 	s.CurMultiEnd = Extensions[v].endMulti
 
-		if ch == '\n' {
-			return Comment
-		} else {
-			ch = s.next()
-		}
-
-		//ext := Extensions[v].ext
-		//for e := range ext {
-		// 		// 	//Reset the position to begining of same line
-		// 		// 	//s.tokPos = -1
-		// 		if ext[e] == s.srcType {
-		// 			smatch := []rune(s.CurSingleComment)
-
-		// 			// 		for ch != '\n' && ch >= 0 {
-		// 			//curpos := s.tokPos
-		// 			//This only works for single line comments
-		// 			for ch != '\n' && ch >= 0 {
-		// 				for x = 0; x < len(smatch); x++ {
-		// 					if string(smatch[x]) == string(ch) {
-		// 						fmt.Println("at position", x, "of", len(smatch))
-		// 						//If we have reached the end of the singlecomment characters and they all match return Comment else just keep iterating over the characters
-		// 						if x == len(smatch)-1 {
-		// 							return Comment
-		// 						}
-
-		// 					} else {
-		// 						x = 0
-		// 					}
-
-		// 					// 				fmt.Println(string(smatch[x]), string(ch))
-		// 					// 				// if string(smatch[x]) != string(ch) {
-		// 					// 				// 	break
-		// 					// 				// 	// 	} else {
-		// 					// 				// 	// 		s.column = curcol
-		// 					// 				// 	// 		break
-		// 					// 				// }
-		// 					// 			}
-		// 					// 			//ch = s.next()
-		// 					// 			//return Comment
-
-		// 					// 			//get current pos
-		// 					// 			//for cur extension iterate checking that each character matches
-		// 					// 			//if it dies return comment
-		// 					// 			//if it no longer matches reset positon for next extension
-		// 					// 			//if ch matches the single comment characters plus any matching characters
-		// 					// 			//return Comment
-		// 					//ch = s.next()
-
-		// 				}
-		// 				ch = s.next()
-		// 			}
-		// 			//ch = s.next()
-		// 			// 		//ch = Comment
-		// 		}
-		// 		//ch = s.next()
-		//}
-		// ch = s.next()
+	if ch == '\n' {
+		return Comment
+	} else {
+		return ch
 	}
-	return Comment
+
+	//ext := Extensions[v].ext
+	//for e := range ext {
+	// 		// 	//Reset the position to begining of same line
+	// 		// 	//s.tokPos = -1
+	// 		if ext[e] == s.srcType {
+	// 			smatch := []rune(s.CurSingleComment)
+
+	// 			// 		for ch != '\n' && ch >= 0 {
+	// 			//curpos := s.tokPos
+	// 			//This only works for single line comments
+	// 			for ch != '\n' && ch >= 0 {
+	// 				for x = 0; x < len(smatch); x++ {
+	// 					if string(smatch[x]) == string(ch) {
+	// 						fmt.Println("at position", x, "of", len(smatch))
+	// 						//If we have reached the end of the singlecomment characters and they all match return Comment else just keep iterating over the characters
+	// 						if x == len(smatch)-1 {
+	// 							return Comment
+	// 						}
+
+	// 					} else {
+	// 						x = 0
+	// 					}
+
+	// 					// 				fmt.Println(string(smatch[x]), string(ch))
+	// 					// 				// if string(smatch[x]) != string(ch) {
+	// 					// 				// 	break
+	// 					// 				// 	// 	} else {
+	// 					// 				// 	// 		s.column = curcol
+	// 					// 				// 	// 		break
+	// 					// 				// }
+	// 					// 			}
+	// 					// 			//ch = s.next()
+	// 					// 			//return Comment
+
+	// 					// 			//get current pos
+	// 					// 			//for cur extension iterate checking that each character matches
+	// 					// 			//if it dies return comment
+	// 					// 			//if it no longer matches reset positon for next extension
+	// 					// 			//if ch matches the single comment characters plus any matching characters
+	// 					// 			//return Comment
+	// 					//ch = s.next()
+
+	// 				}
+	// 				ch = s.next()
+	// 			}
+	// 			//ch = s.next()
+	// 			// 		//ch = Comment
+	// 		}
+	// 		//ch = s.next()
+	//}
+	// ch = s.next()
+	// }
+	// return Comment
 }
 
 // Scan reads the next token or Unicode character from source and returns it.
