@@ -631,9 +631,6 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 							//If we have reached the end of the singlecomment characters and they all match return Comment else just keep iterating over the characters
 							if x == len(smatch)-1 {
 								return Comment
-							} else {
-								//fmt.Println("MATCHCHAR", string(smatch[x]), string(ch))
-								ch = s.next()
 							}
 						}
 
@@ -654,14 +651,14 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 						// 			//if it no longer matches reset positon for next extension
 						// 			//if ch matches the single comment characters plus any matching characters
 						// 			//return Comment
-						ch = s.next()
+						//ch = s.next()
 
 					}
 				}
-				ch = s.next()
+				//ch = s.next()
 				// 		//ch = Comment
 			}
-			ch = s.next()
+			//ch = s.next()
 		}
 		ch = s.next()
 	}
