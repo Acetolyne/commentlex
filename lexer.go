@@ -616,7 +616,11 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	// 	s.CurMultiEnd = Extensions[v].endMulti
 
 	for {
-		return Comment
+		if ch != '\n' && ch >= 0 {
+			return Comment
+		} else {
+			return ch
+		}
 	}
 
 	//ext := Extensions[v].ext
