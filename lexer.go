@@ -623,6 +623,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 
 				// 		for ch != '\n' && ch >= 0 {
 				//curpos := s.tokPos
+				//This only works for single line comments
 				for ch != '\n' && ch >= 0 {
 					for x := range smatch {
 						if string(smatch[x]) == string(ch) {
@@ -657,9 +658,10 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 
 					}
 				}
-				return ch
+				ch = s.next()
 				// 		//ch = Comment
 			}
+			ch = s.next()
 		}
 	}
 	return ch
