@@ -622,6 +622,9 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	// 		ch = s.next()
 	// 	}
 	// }
+	for ch != '\n' && ch >= 0 {
+		ch = s.next()
+	}
 	return Comment
 
 	//ext := Extensions[v].ext
