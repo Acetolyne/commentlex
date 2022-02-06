@@ -609,6 +609,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	//@todo keep going until the newline
 	//fmt.Println(s.line, ":", s.column, string(ch))
 	//curcol := s.column
+	x := 0
 	for v := range Extensions {
 		s.CurSingleComment = Extensions[v].startSingle
 		s.CurMultiStart = Extensions[v].startMulti
@@ -625,13 +626,16 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				//curpos := s.tokPos
 				//This only works for single line comments
 				for ch != '\n' && ch >= 0 {
-					for x := range smatch {
+					for x = 0; x < len(smatch); x++ {
 						if string(smatch[x]) == string(ch) {
 							fmt.Println("at position", x, "of", len(smatch))
 							//If we have reached the end of the singlecomment characters and they all match return Comment else just keep iterating over the characters
 							if x == len(smatch)-1 {
 								return Comment
 							}
+
+						} else {
+							x = 0
 						}
 
 						// 				fmt.Println(string(smatch[x]), string(ch))
