@@ -618,7 +618,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		if ch == '\n' {
 			return Comment
 		} else {
-			return ch
+			ch = s.next()
 		}
 
 		//ext := Extensions[v].ext
@@ -671,7 +671,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		// 		}
 		// 		//ch = s.next()
 		//}
-		// 	//ch = s.next()
+		// ch = s.next()
 	}
 	return Comment
 }
