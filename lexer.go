@@ -654,7 +654,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 						// 			//if it no longer matches reset positon for next extension
 						// 			//if ch matches the single comment characters plus any matching characters
 						// 			//return Comment
-						// 			ch = s.next()
+						ch = s.next()
 
 					}
 				}
