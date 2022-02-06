@@ -619,7 +619,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		if ch != '\n' && ch >= 0 {
 			return Comment
 		} else {
-			return ch
+			ch = s.next()
 		}
 	}
 
