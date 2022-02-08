@@ -63,6 +63,12 @@ var Extensions = []CommentValues{
 		startMulti:  "<!--",
 		endMulti:    "-->",
 	},
+	{
+		ext:         []string{".lua"},
+		startSingle: "--",
+		startMulti:  "--[[",
+		endMulti:    "--]]",
+	},
 }
 
 // IsValid reports whether the position is valid.
@@ -622,17 +628,27 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	// 		ch = s.next()
 	// 	}
 	// }
-	singlePos := 0
+	isSingle := false
 	//MultiStartPos := 0
 	//MultiEndPos := 0
-	if singlePos >= 0 {
-		for ch != '\n' && ch >= 0 {
-			ch = s.next()
+
+	for ch >= 0 {
+		//Single comment check
+		if ch != '\n' {
+			if string(ch) == "/" {
+				isSingle = true
+			}
+
 		}
-		return Comment
-	} else {
-		return ch
+		if isSingle {
+			return Comment
+		}
+		isSingle = false
+		//Multi comment checking
+		//iterate to next ch only after checking both single and multi
+		ch = s.next()
 	}
+	return ch
 
 	//ext := Extensions[v].ext
 	//for e := range ext {
