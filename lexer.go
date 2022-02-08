@@ -638,8 +638,9 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		if ch != '\n' {
 			//check all the Extensions that match filetype
 			for v := range Extensions {
-				for ext := range []string(Extensions[v].ext) {
-					fmt.Println(ext)
+				curext := Extensions[v].ext
+				for ext := range curext {
+					fmt.Println(curext[ext])
 					if string(ch) == "/" {
 						isSingle = true
 					}
