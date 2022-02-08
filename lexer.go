@@ -640,9 +640,11 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			for v := range Extensions {
 				curext := Extensions[v].ext
 				for ext := range curext {
-					fmt.Println(curext[ext])
-					if string(ch) == "/" {
-						isSingle = true
+					if t == curext[ext] {
+						fmt.Println(curext[ext])
+						if string(ch) == "/" {
+							isSingle = true
+						}
 					}
 				}
 			}
