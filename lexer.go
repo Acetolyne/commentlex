@@ -610,7 +610,12 @@ func digitVal(ch rune) int {
 
 //scanComment scans current line or lines and returns if it is a comment or not
 func (s *Scanner) scanComment(ch rune, t string) rune {
-
+	fmt.Println(string(ch))
+	ch = s.next()
+	fmt.Println(string(ch))
+	//s.column--
+	s.tokPos = -1
+	fmt.Println(string(ch))
 	//mmatch := []rune(s.CurMultiStart)
 	//@todo keep going until the newline
 	//fmt.Println(s.line, ":", s.column, string(ch))
@@ -643,7 +648,8 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 					if s.srcType == curext[ext] {
 						fmt.Println("Extensions:", v)
 						fmt.Println(curext[ext])
-						if string(ch) == "/" {
+
+						if string(ch) == string(Extensions[v].startSingle) {
 							isSingle = true
 						}
 					}
