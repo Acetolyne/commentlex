@@ -632,7 +632,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	//MultiStartPos := 0
 	//MultiEndPos := 0
 
-	for ch >= 0 {
+	for ch >= 0 && ch != '\n' {
 		//Single comment check
 		if ch != '\n' {
 			//check all the Extensions that match filetype
