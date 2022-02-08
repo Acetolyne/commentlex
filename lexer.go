@@ -661,6 +661,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		//iterate to next ch only after checking both single and multi
 		ch = s.next()
 	}
+	fmt.Println(ch, string(ch))
 	return ch
 
 	//ext := Extensions[v].ext
