@@ -635,7 +635,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	for ch >= 0 {
 		//Single comment check
 		if ch != '\n' {
-			if string(ch) == "/" {
+			if string(ch) == "//" {
 				isSingle = true
 			}
 
