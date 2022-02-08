@@ -628,6 +628,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	// 		ch = s.next()
 	// 	}
 	// }
+	//@todo check until \n if it matches multiline comment then continue to end of comment then return Comment elseif it matches single line comment then return Comment else return ch
 	isSingle := false
 	//MultiStartPos := 0
 	//MultiEndPos := 0
@@ -635,12 +636,18 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	for ch >= 0 {
 		//Single comment check
 		if ch != '\n' {
-			if string(ch) == "/" {
-				isSingle = true
+			//check all the Extensions that match filetype
+			for v := range Extensions {
+				for ext := range []string(Extensions[v].ext) {
+					fmt.Println(ext)
+					if string(ch) == "/" {
+						isSingle = true
+					}
+				}
 			}
 
 		}
-		if isSingle {
+		if isSingle == true {
 			return Comment
 		}
 		isSingle = false
