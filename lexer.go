@@ -645,6 +645,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			for v := range Extensions {
 				curext := Extensions[v].ext
 				for ext := range curext {
+					fmt.Println("TT:", s.TokenText())
 					if s.srcType == curext[ext] {
 						fmt.Println("Extensions:", v)
 						fmt.Println(curext[ext])
