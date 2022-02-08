@@ -659,6 +659,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 
 		}
 		if isSingle == true {
+			isSingle = false
 			return Comment
 		}
 		isSingle = false
