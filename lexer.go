@@ -643,8 +643,9 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 					if s.srcType == curext[ext] {
 						fmt.Println("Extensions:", v)
 						fmt.Println(curext[ext])
-
+						fmt.Println("COMP:", string(ch), "&", string(Extensions[v].startSingle))
 						if string(ch) == string(Extensions[v].startSingle) {
+							fmt.Println("setting true")
 							isSingle = true
 						}
 					}
