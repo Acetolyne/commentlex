@@ -647,7 +647,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 						fmt.Println("Extensions:", v)
 						fmt.Println(curext[ext])
 						curlen := len(commentStatus[v])
-						fmt.Println("COMP:", string(ch), "&", string(Extensions[v].startSingle[curlen]))
+						fmt.Println("COMP:", string(ch), "&", string(Extensions[v].startSingle[curlen-1]))
 						if commentStatus[v] != Extensions[v].startSingle {
 							if string(ch) == string(Extensions[v].startSingle[curlen]) {
 								fmt.Println("setting true")
