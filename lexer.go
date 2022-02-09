@@ -651,25 +651,26 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				for ext := range curext {
 					//fmt.Println("POS:", s.Pos())
 					if s.srcType == curext[ext] {
-						curlen := len(s.CommentStatus[v])
-						if Extensions[v].startSingle != "" {
-							fmt.Println("COMP:", s.CommentStatus[v], "&", Extensions[v].startSingle)
-							//if s.CommentStatus[v] != Extensions[v].startSingle { //If we already have a full match then skip it
-							if string(ch) == string(Extensions[v].startSingle[curlen]) && ch == '\n' { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-								fmt.Println("setting true")
-								s.CommentStatus[v] += string(ch)
-							} else {
-								s.CommentStatus[v] = ""
+						fmt.Println("Extension:", curext[ext])
+						// curlen := len(s.CommentStatus[v])
+						// if Extensions[v].startSingle != "" {
+						// 	fmt.Println("COMP:", s.CommentStatus[v], "&", Extensions[v].startSingle)
+						// 	//if s.CommentStatus[v] != Extensions[v].startSingle { //If we already have a full match then skip it
+						// 	if string(ch) == string(Extensions[v].startSingle[curlen]) && ch == '\n' { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+						// 		fmt.Println("setting true")
+						// 		s.CommentStatus[v] += string(ch)
+						// 	} else {
+						// 		s.CommentStatus[v] = ""
 
-							}
-							if s.CommentStatus[v] == Extensions[v].startSingle {
-								fmt.Println("Returning!!!!!!!!!")
-								return Comment
-							}
-							// } else {
-							// 	return Comment
-							// }
-						}
+						// 	}
+						// 	if s.CommentStatus[v] == Extensions[v].startSingle {
+						// 		fmt.Println("Returning!!!!!!!!!")
+						// 		return Comment
+						// 	}
+						// 	// } else {
+						// 	// 	return Comment
+						// 	// }
+						// }
 					}
 				}
 			}
@@ -677,12 +678,12 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		}
 		ch = s.next()
 	}
-	fmt.Println(string(ch))
-	for v := range Extensions {
-		if s.CommentStatus[v] == Extensions[v].startSingle {
-			return Comment
-		}
-	}
+	//fmt.Println(string(ch))
+	// for v := range Extensions {
+	// 	if s.CommentStatus[v] == Extensions[v].startSingle {
+	// 		return Comment
+	// 	}
+	// }
 	return ch
 	// fmt.Println(s.CommentStatus)
 	// for i, v := range s.CommentStatus {
