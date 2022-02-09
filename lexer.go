@@ -661,6 +661,8 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 								} else {
 									s.CommentStatus[v] = ""
 								}
+							} else {
+								return Comment
 							}
 						}
 					}
@@ -672,15 +674,15 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		}
 		ch = s.next()
 	}
-	fmt.Println(s.CommentStatus)
-	for i, v := range s.CommentStatus {
-		fmt.Println(i, ")", v)
-		//Always check for multiline comments first because some languages start their single line and multi line comments with the same characters (Lua)
-		//@todo add multiline comment checking above single line checking
-		if s.CommentStatus[i] == s.CurSingleComment {
-			return Comment
-		}
-	}
+	// fmt.Println(s.CommentStatus)
+	// for i, v := range s.CommentStatus {
+	// 	fmt.Println(i, ")", v)
+	// 	//Always check for multiline comments first because some languages start their single line and multi line comments with the same characters (Lua)
+	// 	//@todo add multiline comment checking above single line checking
+	// 	if s.CommentStatus[i] == s.CurSingleComment {
+	// 		return Comment
+	// 	}
+	// }
 	//If yes and is single then do s.next until we get to the end of the line then return Comment
 	//If yes and is multi then dont stop at newline go until we match the end of comment chars then return Comment
 	// if isSingle == true && ch == '\n' {
