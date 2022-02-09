@@ -639,7 +639,6 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	//MultiStartPos := 0
 	//MultiEndPos := 0
 	//s.CommentStatus := make(map[int]string)
-	e := 0
 	if ch >= 0 && ch != '\n' {
 		//Check the line until \n and see if we have the start of a comment any multi or any single
 		if ch != '\n' {
@@ -651,9 +650,10 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				for ext := range curext {
 					//fmt.Println("POS:", s.Pos())
 					if s.srcType == curext[ext] {
-						e++
-						fmt.Println("Extension:", e, curext[ext])
-						// curlen := len(s.CommentStatus[v])
+						//e++
+						//fmt.Println("Extension:", e, curext[ext])
+						curlen := len(s.CommentStatus[v])
+						fmt.Println("Curlen:", curlen)
 						// if Extensions[v].startSingle != "" {
 						// 	fmt.Println("COMP:", s.CommentStatus[v], "&", Extensions[v].startSingle)
 						// 	//if s.CommentStatus[v] != Extensions[v].startSingle { //If we already have a full match then skip it
