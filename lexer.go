@@ -631,28 +631,36 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	isSingle := false
 	//MultiStartPos := 0
 	//MultiEndPos := 0
+	commentStatus := make(map[int]string)
 
 	for ch >= 0 && ch != '\n' {
-		//Single comment check
+		//Check the line until \n and see if we have the start of a comment any multi or any single
 		if ch != '\n' {
 			//check all the Extensions that match filetype
 			for v := range Extensions {
+				//set a dict like {extension number: current matching characters} ex: {0:0, 1:0, 2:0}
+				commentStatus[v] = ""
+
 				curext := Extensions[v].ext
 				for ext := range curext {
 					fmt.Println("POS:", s.Pos())
 					if s.srcType == curext[ext] {
 						fmt.Println("Extensions:", v)
 						fmt.Println(curext[ext])
-						fmt.Println("COMP:", string(ch), "&", string(Extensions[v].startSingle))
-						if string(ch) == string(Extensions[v].startSingle) {
+						curlen := len(commentStatus[v])
+						fmt.Println("COMP:", string(ch), "&", string(Extensions[v].startSingle[curlen]))
+						if string(ch) == string(Extensions[v].startSingle) { //If the first character matches append string of ch to the dict matching char for extension number we are on
 							fmt.Println("setting true")
 							isSingle = true
-						}
+						} //else set the character in dict to "" for this extrension number
 					}
 				}
 			}
 
 		}
+		//for range in dict check is any value in extensions matches the lenth
+		//If yes and is single then do s.next until we get to the end of the line then return Comment
+		//If yes and is multi then dont stop at newline go until we match the end of comment chars then return Comment
 		if isSingle == true && ch == '\n' {
 			isSingle = false
 			return Comment
