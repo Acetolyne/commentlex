@@ -635,7 +635,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	// 	}
 	// }
 	//@todo check until \n if it matches multiline comment then continue to end of comment then return Comment elseif it matches single line comment then return Comment else return ch
-	isSingle := false
+	//isSingle := false
 	//MultiStartPos := 0
 	//MultiEndPos := 0
 	//s.CommentStatus := make(map[int]string)
@@ -651,11 +651,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				for ext := range curext {
 					//fmt.Println("POS:", s.Pos())
 					if s.srcType == curext[ext] {
-						fmt.Println("Extensions:", v)
-						fmt.Println(curext[ext])
 						curlen := len(s.CommentStatus[v])
-						fmt.Println("Curlen:", curlen)
-						fmt.Println(Extensions[v].startSingle)
 						if Extensions[v].startSingle != "" {
 							//fmt.Println("COMP:", string(ch), "&", string(Extensions[v].startSingle[curlen]))
 							if s.CommentStatus[v] != Extensions[v].startSingle { //If we already have a full match then skip it
@@ -672,22 +668,24 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			}
 
 		}
-		fmt.Println(s.CommentStatus[0])
-		fmt.Println(s.CommentStatus[1])
-		fmt.Println(s.CommentStatus[2])
-
-		//for range in dict check is any value in extensions matches the lenth
-		//If yes and is single then do s.next until we get to the end of the line then return Comment
-		//If yes and is multi then dont stop at newline go until we match the end of comment chars then return Comment
-		if isSingle == true && ch == '\n' {
-			isSingle = false
+	}
+	for i := range s.CommentStatus {
+		//Always check for multiline comments first because some languages start their single line and multi line comments with the same characters (Lua)
+		//@todo add multiline comment checking above single line checking
+		if s.CommentStatus[i] == s.CurSingleComment {
 			return Comment
 		}
-		isSingle = false
-		//Multi comment checking
-		//iterate to next ch only after checking both single and multi
-		ch = s.next()
 	}
+	//If yes and is single then do s.next until we get to the end of the line then return Comment
+	//If yes and is multi then dont stop at newline go until we match the end of comment chars then return Comment
+	// if isSingle == true && ch == '\n' {
+	// 	isSingle = false
+	// 	return Comment
+	// }
+	// isSingle = false
+	//Multi comment checking
+	//iterate to next ch only after checking both single and multi
+	ch = s.next()
 	return ch
 
 	//ext := Extensions[v].ext
