@@ -654,18 +654,18 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 						curlen := len(s.CommentStatus[v])
 						if Extensions[v].startSingle != "" {
 							fmt.Println("COMP:", s.CommentStatus[v], "&", Extensions[v].startSingle)
-							if s.CommentStatus[v] != Extensions[v].startSingle { //If we already have a full match then skip it
-								if string(ch) == string(Extensions[v].startSingle[curlen]) && ch == '\n' { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-									fmt.Println("setting true")
-									s.CommentStatus[v] += string(ch)
-								} else {
-									s.CommentStatus[v] = ""
-									ch = s.next()
-
-								}
+							//if s.CommentStatus[v] != Extensions[v].startSingle { //If we already have a full match then skip it
+							if string(ch) == string(Extensions[v].startSingle[curlen]) && ch == '\n' { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+								fmt.Println("setting true")
+								s.CommentStatus[v] += string(ch)
 							} else {
-								return Comment
+								s.CommentStatus[v] = ""
+								ch = s.next()
+
 							}
+							// } else {
+							// 	return Comment
+							// }
 						}
 					}
 				}
