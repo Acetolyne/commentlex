@@ -632,6 +632,9 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	//MultiStartPos := 0
 	//MultiEndPos := 0
 	commentStatus := make(map[int]string)
+	for v := range Extensions {
+		commentStatus[v] = ""
+	}
 
 	for ch >= 0 && ch != '\n' {
 		//Check the line until \n and see if we have the start of a comment any multi or any single
@@ -639,7 +642,6 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			//check all the Extensions that match filetype
 			for v := range Extensions {
 				//set a dict like {extension number: current matching characters} ex: {0:0, 1:0, 2:0}
-				commentStatus[v] = ""
 
 				curext := Extensions[v].ext
 				for ext := range curext {
