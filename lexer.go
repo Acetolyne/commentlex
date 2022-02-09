@@ -671,6 +671,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		}
 		ch = s.next()
 	}
+	fmt.Println(string(ch))
 	return Comment
 	// fmt.Println(s.CommentStatus)
 	// for i, v := range s.CommentStatus {
