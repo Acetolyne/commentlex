@@ -639,7 +639,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	//MultiStartPos := 0
 	//MultiEndPos := 0
 	//s.CommentStatus := make(map[int]string)
-
+	e := 0
 	for ch >= 0 && ch != '\n' {
 		//Check the line until \n and see if we have the start of a comment any multi or any single
 		if ch != '\n' {
@@ -648,7 +648,6 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				//set a dict like {extension number: current matching characters} ex: {0:0, 1:0, 2:0}
 
 				curext := Extensions[v].ext
-				e := 0
 				for ext := range curext {
 					//fmt.Println("POS:", s.Pos())
 					if s.srcType == curext[ext] {
