@@ -657,7 +657,8 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 						if Extensions[v].startSingle != "" {
 							fmt.Println("COMP:", s.CommentStatus[v], "&", Extensions[v].startSingle) //LOOK AT THIS BACKWARDS SHIT!
 							// 	//if s.CommentStatus[v] != Extensions[v].startSingle { //If we already have a full match then skip it
-							if curlen <= len(string(Extensions[v].startSingle[curlen])) {
+							fmt.Println("curlenofsinglechars:", len(string(Extensions[v].startSingle)))
+							if curlen < len(string(Extensions[v].startSingle)) {
 								if string(ch) == string(Extensions[v].startSingle[curlen]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 									fmt.Println("setting true")
 									s.CommentStatus[v] += string(ch)
