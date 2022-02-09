@@ -660,6 +660,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 									s.CommentStatus[v] += string(ch)
 								} else {
 									s.CommentStatus[v] = ""
+									ch = s.next()
 
 								}
 							} else {
