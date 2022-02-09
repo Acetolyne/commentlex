@@ -669,6 +669,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 
 		}
 	}
+	fmt.Println("hiyooooo")
 	for i := range s.CommentStatus {
 		//Always check for multiline comments first because some languages start their single line and multi line comments with the same characters (Lua)
 		//@todo add multiline comment checking above single line checking
