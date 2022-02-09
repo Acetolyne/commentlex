@@ -649,15 +649,23 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 						fmt.Println(curext[ext])
 						curlen := len(commentStatus[v])
 						fmt.Println("COMP:", string(ch), "&", string(Extensions[v].startSingle[curlen]))
-						if string(ch) == string(Extensions[v].startSingle) { //If the first character matches append string of ch to the dict matching char for extension number we are on
-							fmt.Println("setting true")
-							isSingle = true
-						} //else set the character in dict to "" for this extrension number
+						if commentStatus[v] != Extensions[v].startSingle {
+							if string(ch) == string(Extensions[v].startSingle[curlen]) {
+								fmt.Println("setting true")
+								commentStatus[v] += string(ch)
+							} else {
+								commentStatus[v] = ""
+							}
+						}
 					}
 				}
 			}
 
 		}
+		fmt.Println(commentStatus[0])
+		fmt.Println(commentStatus[1])
+		fmt.Println(commentStatus[2])
+
 		//for range in dict check is any value in extensions matches the lenth
 		//If yes and is single then do s.next until we get to the end of the line then return Comment
 		//If yes and is multi then dont stop at newline go until we match the end of comment chars then return Comment
