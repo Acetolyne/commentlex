@@ -639,6 +639,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			//check all the Extensions that match filetype
 			for v := range Extensions {
 				//set a dict like {extension number: current matching characters} ex: {0:0, 1:0, 2:0}
+				commentStatus[v] = ""
 
 				curext := Extensions[v].ext
 				for ext := range curext {
@@ -648,8 +649,8 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 						fmt.Println(curext[ext])
 						curlen := len(commentStatus[v])
 						fmt.Println("COMP:", string(ch), "&", string(Extensions[v].startSingle[curlen-1]))
-						if commentStatus[v] != Extensions[v].startSingle {
-							if string(ch) == string(Extensions[v].startSingle[curlen]) {
+						if commentStatus[v] != Extensions[v].startSingle { //If we already have a full match then skip it
+							if string(ch) == string(Extensions[v].startSingle[curlen]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 								fmt.Println("setting true")
 								commentStatus[v] += string(ch)
 							} else {
