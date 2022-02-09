@@ -639,7 +639,6 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			//check all the Extensions that match filetype
 			for v := range Extensions {
 				//set a dict like {extension number: current matching characters} ex: {0:0, 1:0, 2:0}
-				commentStatus[v] = ""
 
 				curext := Extensions[v].ext
 				for ext := range curext {
