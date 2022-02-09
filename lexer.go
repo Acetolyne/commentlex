@@ -648,10 +648,12 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				//set a dict like {extension number: current matching characters} ex: {0:0, 1:0, 2:0}
 
 				curext := Extensions[v].ext
+				e := 0
 				for ext := range curext {
 					//fmt.Println("POS:", s.Pos())
 					if s.srcType == curext[ext] {
-						fmt.Println("Extension:", curext[ext])
+						e++
+						fmt.Println("Extension:", e, curext[ext])
 						// curlen := len(s.CommentStatus[v])
 						// if Extensions[v].startSingle != "" {
 						// 	fmt.Println("COMP:", s.CommentStatus[v], "&", Extensions[v].startSingle)
