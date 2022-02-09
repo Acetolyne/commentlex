@@ -182,6 +182,7 @@ type Scanner struct {
 	CurSingleComment string
 	CurMultiStart    string
 	CurMultiEnd      string
+	CommentStatus    map[int]string
 
 	// Token text buffer
 	// Typically, token text is stored completely in srcBuf, but in general
@@ -237,6 +238,9 @@ func (s *Scanner) Init(file string) *Scanner {
 	// All comment types that are possible when we first start scanning
 	s.singlePossible = true
 	s.multiPossible = true
+	for v := range Extensions {
+		s.CommentStatus[v] = ""
+	}
 
 	// Get the filetype so we can set the comment characters for this scan
 	src, err := os.Open(file)
@@ -631,10 +635,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	isSingle := false
 	//MultiStartPos := 0
 	//MultiEndPos := 0
-	commentStatus := make(map[int]string)
-	for v := range Extensions {
-		commentStatus[v] = ""
-	}
+	//s.CommentStatus := make(map[int]string)
 
 	for ch >= 0 && ch != '\n' {
 		//Check the line until \n and see if we have the start of a comment any multi or any single
@@ -649,15 +650,15 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 					if s.srcType == curext[ext] {
 						fmt.Println("Extensions:", v)
 						fmt.Println(curext[ext])
-						curlen := len(commentStatus[v])
+						curlen := len(s.CommentStatus[v])
 						if Extensions[v].startSingle != "" {
 							fmt.Println("COMP:", string(ch), "&", string(Extensions[v].startSingle[curlen]))
-							if commentStatus[v] != Extensions[v].startSingle { //If we already have a full match then skip it
+							if s.CommentStatus[v] != Extensions[v].startSingle { //If we already have a full match then skip it
 								if string(ch) == string(Extensions[v].startSingle[curlen]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 									fmt.Println("setting true")
-									commentStatus[v] += string(ch)
+									s.CommentStatus[v] += string(ch)
 								} else {
-									commentStatus[v] = ""
+									s.CommentStatus[v] = ""
 								}
 							}
 						}
@@ -666,9 +667,9 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			}
 
 		}
-		fmt.Println(commentStatus[0])
-		fmt.Println(commentStatus[1])
-		fmt.Println(commentStatus[2])
+		fmt.Println(s.CommentStatus[0])
+		fmt.Println(s.CommentStatus[1])
+		fmt.Println(s.CommentStatus[2])
 
 		//for range in dict check is any value in extensions matches the lenth
 		//If yes and is single then do s.next until we get to the end of the line then return Comment
