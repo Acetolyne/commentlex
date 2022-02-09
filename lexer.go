@@ -670,6 +670,8 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			}
 
 		}
+		ch = s.next()
+		return ch
 	}
 	// fmt.Println(s.CommentStatus)
 	// for i, v := range s.CommentStatus {
@@ -689,7 +691,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	// isSingle = false
 	//Multi comment checking
 	//iterate to next ch only after checking both single and multi
-	ch = s.next()
+	// ch = s.next()
 	return ch
 
 	//ext := Extensions[v].ext
