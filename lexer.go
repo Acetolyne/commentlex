@@ -238,9 +238,9 @@ func (s *Scanner) Init(file string) *Scanner {
 	// All comment types that are possible when we first start scanning
 	s.singlePossible = true
 	s.multiPossible = true
-	for v := range Extensions {
-		s.CommentStatus[v] = ""
-	}
+	// for v := range Extensions {
+	// 	s.CommentStatus[v] = ""
+	// }
 
 	// Get the filetype so we can set the comment characters for this scan
 	src, err := os.Open(file)
