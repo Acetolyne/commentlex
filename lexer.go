@@ -658,7 +658,9 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 									fmt.Println("setting true")
 									s.CommentStatus[v] += string(ch)
 								} else {
-									s.CommentStatus[v] = ""
+									if s.CommentStatus[v] != "" {
+										s.CommentStatus[v] = ""
+									}
 								}
 							}
 						}
