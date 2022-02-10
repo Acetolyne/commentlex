@@ -546,8 +546,8 @@ func digitVal(ch rune) int {
 func (s *Scanner) scanComment(ch rune, t string) rune {
 	isSingle := false
 	isMulti := false
-	fmt.Println(ch, string(ch))
 	for ch != '\n' && ch >= 0 {
+		fmt.Println(ch, string(ch))
 		for v := range Extensions {
 			curext := Extensions[v].ext
 			for ext := range curext {
