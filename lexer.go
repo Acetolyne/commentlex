@@ -20,6 +20,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"unicode"
 	"unicode/utf8"
 )
@@ -546,6 +547,7 @@ func digitVal(ch rune) int {
 func (s *Scanner) scanComment(ch rune) rune {
 	isSingle := false
 	isMulti := false
+	multicheck := ""
 	for ch != '\n' && ch >= 0 {
 		for v := range Extensions {
 			curext := Extensions[v].ext
@@ -555,6 +557,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 					curlenmulti := len(s.CommentStatusMulti[v])
 					if Extensions[v].startSingle != "" {
 						if curlensingle < len(string(Extensions[v].startSingle)) {
+							//@todo if match is not "" then also add the match directly after comment characters for single line comments
 							if string(ch) == string(Extensions[v].startSingle[curlensingle]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 								s.CommentStatusSingle[v] += string(ch)
 								if len(s.CommentStatusSingle[v]) == len(Extensions[v].startSingle) {
@@ -567,9 +570,11 @@ func (s *Scanner) scanComment(ch rune) rune {
 						}
 					}
 					if Extensions[v].startMulti != "" {
+						multicheck += string(ch)
 						if curlenmulti < len(string(Extensions[v].startMulti)) {
 							if string(ch) == string(Extensions[v].startMulti[curlenmulti]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 								s.CommentStatusMulti[v] += string(ch)
+								//@todo if match is not "" then ensure it is somewhere in this comment after we reach the end of the comment
 								if len(s.CommentStatusMulti[v]) == len(Extensions[v].startMulti) {
 									isMulti = true
 								}
@@ -599,7 +604,13 @@ func (s *Scanner) scanComment(ch rune) rune {
 						}
 					}
 					if curlenmultiend == len(string(Extensions[v].endMulti)) {
-						return Comment
+						if s.Match != "" {
+							if strings.Contains(multicheck, s.Match) {
+								return Comment
+							}
+						} else {
+							return Comment
+						}
 					}
 				}
 				ch = s.next()
