@@ -667,7 +667,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 									// for ch != '\n' {
 									// 	ch = s.next()
 									// }
-									return Comment
+									//return Comment
 								} else {
 									s.CommentStatus[v] = ""
 
@@ -689,6 +689,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			}
 			ch = s.next()
 		}
+		return Comment
 	}
 	//fmt.Println(string(ch))
 	// for v := range Extensions {
