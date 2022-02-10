@@ -543,7 +543,7 @@ func digitVal(ch rune) int {
 }
 
 //scanComment scans current line or lines and returns if it is a comment or not
-func (s *Scanner) scanComment(ch rune, t string) rune {
+func (s *Scanner) scanComment(ch rune) rune {
 	isSingle := false
 	isMulti := false
 	for ch != '\n' && ch >= 0 {
@@ -595,11 +595,11 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 			for ch != EOF {
 				curlenmultiend := len(s.CommentStatusMultiEnd[v])
 				if Extensions[v].endMulti != "" {
-					if ch == '\n' {
-						space := []rune{'\u0020'}
-						ch = space[0]
-						fmt.Println("SET", ch, string(ch))
-					}
+					// if ch == '\n' {
+					// 	space := []rune{'\u0020'}
+					// 	ch = space[0]
+					// 	fmt.Println("SET", ch, string(ch))
+					// }
 					if curlenmultiend < len(string(Extensions[v].endMulti)) {
 						if string(ch) == string(Extensions[v].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 							s.CommentStatusMultiEnd[v] += string(ch)
@@ -632,20 +632,13 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 // message to os.Stderr.
 
 func (s *Scanner) Scan() rune {
+	//go to the first character
 	ch := s.next()
-	// fmt.Println(s.line, ":", s.column, string(ch))
-	// ch = s.next()
-	// fmt.Println(s.line, ":", s.column, string(ch))
-	// ch = s.next()
-	// fmt.Println(s.line, ":", s.column, string(ch))
-	// fmt.Println(s.column)
-	// fmt.Println(s.line)
 
 	// reset token text position
 	s.tokPos = -1
 	s.Line = 0
 
-	//redo:
 	// skip white space
 	for s.Whitespace&(1<<uint(ch)) != 0 {
 		ch = s.next()
@@ -676,65 +669,11 @@ func (s *Scanner) Scan() rune {
 	case EOF:
 		break
 	default:
-		//Set the comment characters
-		//@todo read a file to get additional comment characters
 		//@todo add more file types and comment characters
-		//@todo loop thru extensions in scanComment function instead
-
-		// s.CurSingleComment = Extensions[v].startSingle
-		// s.CurMultiStart = Extensions[v].startMulti
-		// s.CurMultiEnd = Extensions[v].endMulti
-		// smatch := []rune(s.CurSingleComment)
-		// mmatch := []rune(s.CurMultiStart)
-		//If the current channel is the start of a single line comment
-		//fmt.Println("Possible Single")
-		// if s.Mode&SkipComments != 0 {
-		// 	s.tokPos = -1 // don't collect token text
-		// 	tok := s.scanComment(ch, "single")
-		// 	s.tokEnd = s.srcPos - s.lastCharLen
-		// 	s.ch = ch
-		// 	//return tok
-		// 	//fmt.Println(string(ch))
-		// 	// if isSingle || isMulti {
-		// 	// 	tok = Comment
-		// 	// } else {
-		// 	// 	tok = ch
-		// 	// }
-		// 	//fmt.Println("REDO")
-		// 	goto redo
-		// }
-		//@todo only scan if ext is the filetype
-		tok := s.scanComment(ch, "single")
-		//fmt.Println(tok)
+		tok := s.scanComment(ch)
 		s.tokEnd = s.srcPos - s.lastCharLen
 		s.ch = ch
-		//ch = s.next()
 		return tok
-		//fmt.Println("HERE")
-		// //fmt.Println(string(ch))
-		// if isSingle || isMulti {
-		// 	tok = Comment
-		// } else {
-		// 	tok = ch
-		// }
-
-		//}
-		//If the current character might be the start of a multiline comment
-		// if len(mmatch) > 0 && string(mmatch[0]) == string(ch) {
-		// 	fmt.Println("Possible Multi")
-		// 	tok := s.scanComment(ch, "multi")
-		// 	s.tokEnd = s.srcPos - s.lastCharLen
-		// 	s.ch = ch
-		// 	return tok
-		// 	//fmt.Println("HERE")
-		// 	//fmt.Println(string(ch))
-		// 	// if isSingle || isMulti {
-		// 	// 	tok = Comment
-		// 	// } else {
-		// 	// 	tok = ch
-		// 	// }
-		// }
-		//ch = s.next()
 	}
 
 	// end of token text
