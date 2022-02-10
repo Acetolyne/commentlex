@@ -690,6 +690,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	}
 	for v := range Extensions {
 		if Extensions[v].startSingle == s.CommentStatus[v] {
+			fmt.Println("Triggered")
 			return Comment
 		}
 	}
