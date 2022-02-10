@@ -626,8 +626,9 @@ func (s *Scanner) scanComment(ch rune) rune {
 	// 		ch = s.next()
 	// 	}
 	//  }
-	for range Extensions {
+	for v := range Extensions {
 		if isSingle == true {
+			s.CommentStatusSingle[v] = ""
 			return Comment
 		}
 	}
