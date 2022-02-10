@@ -601,7 +601,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 						fmt.Println("adding ch")
 						s.CommentStatusMultiEnd[s.MultiExtNum] += string(ch)
 					} else {
-						s.CommentStatusMulti[s.MultiExtNum] = ""
+						s.CommentStatusMultiEnd[s.MultiExtNum] = ""
 
 					}
 				}
