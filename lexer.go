@@ -148,7 +148,7 @@ func TokenString(tok rune) string {
 
 // GoWhitespace is the default value for the Scanner's Whitespace field.
 // Its value selects Go's white space characters.
-const GoWhitespace = 1<<'\t' | 1<<'\n' | 1<<'\r' | 1<<' '
+const GoWhitespace = 1<<'\t' | 1<<' '
 
 const bufLen = 1024 // at least utf8.UTFMax
 
