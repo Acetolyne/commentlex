@@ -609,7 +609,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 					fmt.Println("SM:", s.Match)
 					if s.Match == "" {
 						fmt.Println("Trying to match")
-						isMulti = false
 						return Comment
 						// if strings.Contains(multicheck, s.Match) {
 						// 	return Comment
@@ -618,14 +617,12 @@ func (s *Scanner) scanComment(ch rune) rune {
 						// }
 					} else {
 						fmt.Println("MATCH is empty")
-						isMulti = false
 						return Comment
 					}
 				}
 			}
 			ch = s.next()
 		}
-		isMulti = false
 		return Comment
 	}
 	for range Extensions {
