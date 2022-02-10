@@ -249,6 +249,9 @@ func (s *Scanner) Init(file string) *Scanner {
 	if s.CommentStatusMulti == nil {
 		s.CommentStatusMulti = make(map[int]string)
 	}
+	if s.CommentStatusMultiEnd == nil {
+		s.CommentStatusMultiEnd = make(map[int]string)
+	}
 
 	// Get the filetype so we can set the comment characters for this scan
 	src, err := os.Open(file)
