@@ -148,7 +148,7 @@ func TokenString(tok rune) string {
 
 // GoWhitespace is the default value for the Scanner's Whitespace field.
 // Its value selects Go's white space characters.
-const GoWhitespace = 1<<'\t' | 1<<' '
+const GoWhitespace = 1<<'\t' | 1<<'\n' | 1<<'\r' | 1<<' '
 
 const bufLen = 1024 // at least utf8.UTFMax
 
@@ -212,7 +212,7 @@ type Scanner struct {
 	// The Whitespace field controls which characters are recognized
 	// as white space. To recognize a character ch <= ' ' as white space,
 	// set the ch'th bit in Whitespace (the Scanner's behavior is undefined
-	// for values ch > ' '). The field may be changed at any time.
+	//for values ch > ' '). The field may be changed at any time.
 	Whitespace uint64
 
 	// IsIdentRune is a predicate controlling the characters accepted
@@ -595,7 +595,8 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				curlenmultiend := len(s.CommentStatusMultiEnd[v])
 				if Extensions[v].endMulti != "" {
 					if ch == '\n' {
-						ch = ' '
+						space := []rune{' '}
+						ch = space[0]
 						ch = s.next()
 					}
 					if curlenmultiend < len(string(Extensions[v].endMulti)) {
