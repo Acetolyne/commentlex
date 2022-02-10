@@ -688,7 +688,12 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		}
 		ch = s.next()
 	}
-	return Comment
+	for v := range Extensions {
+		if Extensions[v].startSingle == s.CommentStatus[v] {
+			return Comment
+		}
+	}
+	return ch
 	//fmt.Println(string(ch))
 	// for v := range Extensions {
 	// 	if s.CommentStatus[v] == Extensions[v].startSingle {
