@@ -610,14 +610,14 @@ func (s *Scanner) scanComment(ch rune) rune {
 					//@todo below is temp since flowcat passes this value in by default for testing only should check if not null
 					if s.Match != "" {
 						fmt.Println("Trying to match")
-						break
+						return Comment
 						// if strings.Contains(multicheck, s.Match) {
 						// 	return Comment
 						// } else {
 						// 	return ch
 						// }
 					} else {
-						break
+						return Comment
 					}
 				}
 			}
