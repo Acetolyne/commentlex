@@ -607,23 +607,23 @@ func (s *Scanner) scanComment(ch rune) rune {
 				}
 				if curlenmultiend == len(string(Extensions[s.MultiExtNum].endMulti)) {
 					fmt.Println("SM:", s.Match)
-					if s.Match == "" {
+					//@todo below is temp since flowcat passes this value in by default for testing only should check if not null
+					if s.Match != "" {
 						fmt.Println("Trying to match")
-						return Comment
+						break
 						// if strings.Contains(multicheck, s.Match) {
 						// 	return Comment
 						// } else {
 						// 	return ch
 						// }
 					} else {
-						fmt.Println("MATCH is empty")
-						return Comment
+						break
 					}
 				}
 			}
 			ch = s.next()
 		}
-		return Comment
+		return ch
 	}
 	for range Extensions {
 		if isSingle == true {
