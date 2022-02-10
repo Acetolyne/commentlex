@@ -678,7 +678,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 									// 	// }
 								}
 							}
-							break
+							//break
 						}
 					}
 				}
