@@ -635,7 +635,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	// 	}
 	// }
 	//@todo check until \n if it matches multiline comment then continue to end of comment then return Comment elseif it matches single line comment then return Comment else return ch
-	//isSingle := false
+	isSingle := false
 	//MultiStartPos := 0
 	//MultiEndPos := 0
 	//s.CommentStatus := make(map[int]string)
@@ -663,6 +663,9 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 							if string(ch) == string(Extensions[v].startSingle[curlen]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 								fmt.Println("setting true")
 								s.CommentStatus[v] += string(ch)
+								if len(s.CommentStatus[v]) == len(Extensions[v].startSingle) {
+									isSingle = true
+								}
 								// for ch != '\n' {
 								// 	ch = s.next()
 								// }
@@ -688,8 +691,8 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		}
 		ch = s.next()
 	}
-	for v := range Extensions {
-		if Extensions[v].startSingle == s.CommentStatus[v] {
+	for range Extensions {
+		if isSingle == true {
 			fmt.Println("Triggered")
 			return Comment
 		}
