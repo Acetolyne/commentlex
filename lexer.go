@@ -44,7 +44,7 @@ type CommentValues struct {
 }
 
 //Initialize comment characters based on file extension
-//This may be more than one type per filetype as html can have javascript comment sin them as well
+//This may be more than one type per filetype as html can have javascript comments in them as well and there may be other filetypes that have multiple languages in them
 var Extensions = []CommentValues{
 	{
 		ext:         []string{".go", ".py", ".js", ".rs", ".html", ".gohtml", ".php"},
@@ -612,6 +612,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 								return ch
 							}
 						} else {
+							fmt.Println("MATCH is empty")
 							return Comment
 						}
 					}
