@@ -639,65 +639,63 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	//MultiStartPos := 0
 	//MultiEndPos := 0
 	//s.CommentStatus := make(map[int]string)
-	if ch >= 0 && ch != '\n' {
-		//Check the line until \n and see if we have the start of a comment any multi or any single
-		for ch != '\n' {
-			//check all the Extensions that match filetype
-			for v := range Extensions {
-				//set a dict like {extension number: current matching characters} ex: {0:0, 1:0, 2:0}
+	//Check the line until \n and see if we have the start of a comment any multi or any single
+	for ch != '\n' && ch >= 0 {
+		//check all the Extensions that match filetype
+		for v := range Extensions {
+			//set a dict like {extension number: current matching characters} ex: {0:0, 1:0, 2:0}
 
-				curext := Extensions[v].ext
-				for ext := range curext {
-					//fmt.Println("POS:", s.Pos())
-					if s.srcType == curext[ext] {
-						//e++
-						//fmt.Println("Extension:", e, curext[ext])
-						//for ch != '\n' {
-						curlen := len(s.CommentStatus[v])
-						fmt.Println("Curlen:", curlen)
-						if Extensions[v].startSingle != "" {
-							//fmt.Println("COMP:", s.CommentStatus[v], "&", Extensions[v].startSingle) //LOOK AT THIS BACKWARDS SHIT!
-							// 	//if s.CommentStatus[v] != Extensions[v].startSingle { //If we already have a full match then skip it
-							//fmt.Println("curlenofsinglechars:", len(string(Extensions[v].startSingle)))
-							fmt.Println("ExtensionNUM:", v, "FileExt:", curext[ext], "StartSingle:", Extensions[v].startSingle, "CH:", string(ch), "Curlen:", curlen)
-							if curlen < len(string(Extensions[v].startSingle)) {
-								if string(ch) == string(Extensions[v].startSingle[curlen]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-									fmt.Println("setting true")
-									s.CommentStatus[v] += string(ch)
-									// for ch != '\n' {
-									// 	ch = s.next()
-									// }
-									//return Comment
-								} else {
-									s.CommentStatus[v] = ""
+			curext := Extensions[v].ext
+			for ext := range curext {
+				//fmt.Println("POS:", s.Pos())
+				if s.srcType == curext[ext] {
+					//e++
+					//fmt.Println("Extension:", e, curext[ext])
+					//for ch != '\n' {
+					curlen := len(s.CommentStatus[v])
+					fmt.Println("Curlen:", curlen)
+					if Extensions[v].startSingle != "" {
+						//fmt.Println("COMP:", s.CommentStatus[v], "&", Extensions[v].startSingle) //LOOK AT THIS BACKWARDS SHIT!
+						// 	//if s.CommentStatus[v] != Extensions[v].startSingle { //If we already have a full match then skip it
+						//fmt.Println("curlenofsinglechars:", len(string(Extensions[v].startSingle)))
+						fmt.Println("ExtensionNUM:", v, "FileExt:", curext[ext], "StartSingle:", Extensions[v].startSingle, "CH:", string(ch), "Curlen:", curlen)
+						if curlen < len(string(Extensions[v].startSingle)) {
+							if string(ch) == string(Extensions[v].startSingle[curlen]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+								fmt.Println("setting true")
+								s.CommentStatus[v] += string(ch)
+								// for ch != '\n' {
+								// 	ch = s.next()
+								// }
+								//return Comment
+							} else {
+								s.CommentStatus[v] = ""
 
-								}
-								//fmt.Println(s.CommentStatus)
-								// 	if s.CommentStatus[v] == Extensions[v].startSingle {
-								// 		fmt.Println("Returning!!!!!!!!!")
-								// 		return Comment
-								// 	}
-								// 	// } else {
-								// 	// 	return Comment
-								// 	// }
 							}
+							//fmt.Println(s.CommentStatus)
+							// 	if s.CommentStatus[v] == Extensions[v].startSingle {
+							// 		fmt.Println("Returning!!!!!!!!!")
+							// 		return Comment
+							// 	}
+							// 	// } else {
+							// 	// 	return Comment
+							// 	// }
 						}
-						//break
-						//}
 					}
+					//break
+					//}
 				}
 			}
-			ch = s.next()
 		}
-		return Comment
+		ch = s.next()
 	}
+	return Comment
 	//fmt.Println(string(ch))
 	// for v := range Extensions {
 	// 	if s.CommentStatus[v] == Extensions[v].startSingle {
 	// 		return Comment
 	// 	}
 	// }
-	return ch
+	//return ch
 	// fmt.Println(s.CommentStatus)
 	// for i, v := range s.CommentStatus {
 	// 	fmt.Println(i, ")", v)
