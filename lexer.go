@@ -584,23 +584,27 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	//Always check multi first because in some languages multi starts with the same characters as single line comments (Lua)
 	for v := range Extensions {
 		if isMulti == true {
-			curext := Extensions[v].ext
-			for range curext {
-				curlenmultiend := len(s.CommentStatusMultiEnd[v])
-				if Extensions[v].endMulti != "" {
-					if curlenmultiend < len(string(Extensions[v].endMulti)) {
-						if string(ch) == string(Extensions[v].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-							s.CommentStatusMultiEnd[v] += string(ch)
-							if len(s.CommentStatusMultiEnd[v]) == len(Extensions[v].endMulti) {
-								return Comment
-							}
-						} else {
-							s.CommentStatusMulti[v] = ""
+			return Comment
+			//curext := Extensions[v].ext
+			// for {
+			// 	if ch == EOF {
+			// 		break
+			// 	}
+			// 	curlenmultiend := len(s.CommentStatusMultiEnd[v])
+			// 	if Extensions[v].endMulti != "" {
+			// 		if curlenmultiend < len(string(Extensions[v].endMulti)) {
+			// 			if string(ch) == string(Extensions[v].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+			// 				s.CommentStatusMultiEnd[v] += string(ch)
+			// 				if len(s.CommentStatusMultiEnd[v]) == len(Extensions[v].endMulti) {
+			// 					return Comment
+			// 				}
+			// 			} else {
+			// 				s.CommentStatusMulti[v] = ""
 
-						}
-					}
-				}
-			}
+			// 			}
+			// 		}
+			// 	}
+			// }
 		}
 	}
 	for range Extensions {
