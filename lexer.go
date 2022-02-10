@@ -590,40 +590,41 @@ func (s *Scanner) scanComment(ch rune) rune {
 	}
 	//Always check multi first because in some languages multi starts with the same characters as single line comments (Lua)
 	//@todo fix issue where anything after multiline comment is not returned as a comment
-	if isMulti == true {
-		for ch != EOF {
-			multicheck += string(ch)
-			curlenmultiend := len(s.CommentStatusMultiEnd[s.MultiExtNum])
-			if Extensions[s.MultiExtNum].endMulti != "" {
-				fmt.Println(Extensions[s.MultiExtNum].endMulti)
-				if curlenmultiend < len(string(Extensions[s.MultiExtNum].endMulti)) {
-					if string(ch) == string(Extensions[s.MultiExtNum].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-						fmt.Println("adding ch")
-						s.CommentStatusMultiEnd[s.MultiExtNum] += string(ch)
-					} else {
-						s.CommentStatusMultiEnd[s.MultiExtNum] = ""
 
-					}
-				}
-				if curlenmultiend == len(string(Extensions[s.MultiExtNum].endMulti)) {
-					fmt.Println("SM:", s.Match)
-					//@todo below is temp since flowcat passes this value in by default for testing only should check if not null
-					if s.Match != "" {
-						fmt.Println("Trying to match")
-						return Comment
-						// if strings.Contains(multicheck, s.Match) {
-						// 	return Comment
-						// } else {
-						// 	return ch
-						// }
-					} else {
-						return Comment
-					}
-				}
-			}
-			fmt.Println("NEXT")
-			ch = s.next()
-		}
+	if isMulti == true {
+		// 	for ch != EOF {
+		multicheck += string(ch)
+		// 		curlenmultiend := len(s.CommentStatusMultiEnd[s.MultiExtNum])
+		// 		if Extensions[s.MultiExtNum].endMulti != "" {
+		// 			fmt.Println(Extensions[s.MultiExtNum].endMulti)
+		// 			if curlenmultiend < len(string(Extensions[s.MultiExtNum].endMulti)) {
+		// 				if string(ch) == string(Extensions[s.MultiExtNum].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+		// 					fmt.Println("adding ch")
+		// 					s.CommentStatusMultiEnd[s.MultiExtNum] += string(ch)
+		// 				} else {
+		// 					s.CommentStatusMultiEnd[s.MultiExtNum] = ""
+
+		// 				}
+		// 			}
+		// 			if curlenmultiend == len(string(Extensions[s.MultiExtNum].endMulti)) {
+		// 				fmt.Println("SM:", s.Match)
+		// 				//@todo below is temp since flowcat passes this value in by default for testing only should check if not null
+		// 				if s.Match != "" {
+		// 					fmt.Println("Trying to match")
+		// 					return Comment
+		// 					// if strings.Contains(multicheck, s.Match) {
+		// 					// 	return Comment
+		// 					// } else {
+		// 					// 	return ch
+		// 					// }
+		// 				} else {
+		// 					return Comment
+		// 				}
+		// 			}
+		// 		}
+		// 		fmt.Println("NEXT")
+		// 		ch = s.next()
+		// 	}
 	}
 	for range Extensions {
 		if isSingle == true {
