@@ -179,11 +179,12 @@ type Scanner struct {
 	lastCharLen  int // length of last character in bytes
 
 	// Comment characters to search for based on file type
-	CurSingleComment    string
-	CurMultiStart       string
-	CurMultiEnd         string
-	CommentStatusSingle map[int]string
-	CommentStatusMulti  map[int]string
+	CurSingleComment      string
+	CurMultiStart         string
+	CurMultiEnd           string
+	CommentStatusSingle   map[int]string
+	CommentStatusMulti    map[int]string
+	CommentStatusMultiEnd map[int]string
 
 	// Token text buffer
 	// Typically, token text is stored completely in srcBuf, but in general
@@ -581,10 +582,25 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		ch = s.next()
 	}
 	//Always check multi first because in some languages multi starts with the same characters as single line comments (Lua)
-	for range Extensions {
+	for v := range Extensions {
 		if isMulti == true {
-			//@todo if it is a multiline comment we need to call s.next until we reach the end of the comment then return Comment
-			return Comment
+			curext := Extensions[v].ext
+			for range curext {
+				curlenmultiend := len(s.CommentStatusMultiEnd[v])
+				if Extensions[v].endMulti != "" {
+					if curlenmultiend < len(string(Extensions[v].endMulti)) {
+						if string(ch) == string(Extensions[v].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+							s.CommentStatusMultiEnd[v] += string(ch)
+							if len(s.CommentStatusMultiEnd[v]) == len(Extensions[v].endMulti) {
+								return Comment
+							}
+						} else {
+							s.CommentStatusMulti[v] = ""
+
+						}
+					}
+				}
+			}
 		}
 	}
 	for range Extensions {
