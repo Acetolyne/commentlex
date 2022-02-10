@@ -185,6 +185,7 @@ type Scanner struct {
 	CommentStatusSingle   map[int]string
 	CommentStatusMulti    map[int]string
 	CommentStatusMultiEnd map[int]string
+	MultiExtNum           int
 
 	// Token text buffer
 	// Typically, token text is stored completely in srcBuf, but in general
@@ -556,7 +557,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 					curlenmulti := len(s.CommentStatusMulti[v])
 					if Extensions[v].startSingle != "" {
 						if curlensingle < len(string(Extensions[v].startSingle)) {
-							//@todo if match is not "" then also add the match directly after comment characters for single line comments
 							if string(ch) == string(Extensions[v].startSingle[curlensingle]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 								s.CommentStatusSingle[v] += string(ch)
 								if len(s.CommentStatusSingle[v]) == len(Extensions[v].startSingle) {
@@ -573,9 +573,9 @@ func (s *Scanner) scanComment(ch rune) rune {
 						if curlenmulti < len(string(Extensions[v].startMulti)) {
 							if string(ch) == string(Extensions[v].startMulti[curlenmulti]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 								s.CommentStatusMulti[v] += string(ch)
-								//@todo if match is not "" then ensure it is somewhere in this comment after we reach the end of the comment
 								if len(s.CommentStatusMulti[v]) == len(Extensions[v].startMulti) {
 									isMulti = true
+									s.MultiExtNum = v
 								}
 							} else {
 								s.CommentStatusMulti[v] = ""
@@ -590,42 +590,40 @@ func (s *Scanner) scanComment(ch rune) rune {
 	}
 	//Always check multi first because in some languages multi starts with the same characters as single line comments (Lua)
 	//@todo fix issue where anything after multiline comment is not returned as a comment
-	for v := range Extensions {
-		if isMulti == true {
-			for ch != EOF {
-				multicheck += string(ch)
-				curlenmultiend := len(s.CommentStatusMultiEnd[v])
-				fmt.Println("ehh?")
-				if Extensions[v].endMulti != "" {
-					fmt.Println(Extensions[v].endMulti)
-					if curlenmultiend < len(string(Extensions[v].endMulti)) {
-						if string(ch) == string(Extensions[v].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-							fmt.Println("adding ch")
-							s.CommentStatusMultiEnd[v] += string(ch)
-						} else {
-							s.CommentStatusMulti[v] = ""
+	if isMulti == true {
+		for ch != EOF {
+			multicheck += string(ch)
+			curlenmultiend := len(s.CommentStatusMultiEnd[s.MultiExtNum])
+			fmt.Println("ehh?")
+			if Extensions[s.MultiExtNum].endMulti != "" {
+				fmt.Println(Extensions[s.MultiExtNum].endMulti)
+				if curlenmultiend < len(string(Extensions[s.MultiExtNum].endMulti)) {
+					if string(ch) == string(Extensions[s.MultiExtNum].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+						fmt.Println("adding ch")
+						s.CommentStatusMultiEnd[s.MultiExtNum] += string(ch)
+					} else {
+						s.CommentStatusMulti[s.MultiExtNum] = ""
 
-						}
-					}
-					if curlenmultiend == len(string(Extensions[v].endMulti)) {
-						if s.Match != "" {
-							fmt.Println("Trying to match")
-							return Comment
-							// if strings.Contains(multicheck, s.Match) {
-							// 	return Comment
-							// } else {
-							// 	return ch
-							// }
-						} else {
-							fmt.Println("MATCH is empty")
-							return Comment
-						}
 					}
 				}
-				ch = s.next()
+				if curlenmultiend == len(string(Extensions[s.MultiExtNum].endMulti)) {
+					if s.Match != "" {
+						fmt.Println("Trying to match")
+						return Comment
+						// if strings.Contains(multicheck, s.Match) {
+						// 	return Comment
+						// } else {
+						// 	return ch
+						// }
+					} else {
+						fmt.Println("MATCH is empty")
+						return Comment
+					}
+				}
 			}
-			return Comment
+			ch = s.next()
 		}
+		return Comment
 	}
 	for range Extensions {
 		if isSingle == true {
