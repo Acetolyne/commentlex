@@ -641,7 +641,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	//s.CommentStatus := make(map[int]string)
 	if ch >= 0 && ch != '\n' {
 		//Check the line until \n and see if we have the start of a comment any multi or any single
-		if ch != '\n' {
+		for ch != '\n' {
 			//check all the Extensions that match filetype
 			for v := range Extensions {
 				//set a dict like {extension number: current matching characters} ex: {0:0, 1:0, 2:0}
@@ -664,9 +664,9 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 								if string(ch) == string(Extensions[v].startSingle[curlen]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 									fmt.Println("setting true")
 									s.CommentStatus[v] += string(ch)
-									for ch != '\n' {
-										ch = s.next()
-									}
+									// for ch != '\n' {
+									// 	ch = s.next()
+									// }
 									return Comment
 								} else {
 									s.CommentStatus[v] = ""
@@ -687,7 +687,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 					}
 				}
 			}
-
+			ch = s.next()
 		}
 	}
 	//fmt.Println(string(ch))
