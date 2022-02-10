@@ -607,6 +607,8 @@ func (s *Scanner) scanComment(ch rune) rune {
 						if s.Match != "" {
 							if strings.Contains(multicheck, s.Match) {
 								return Comment
+							} else {
+								return ch
 							}
 						} else {
 							return Comment
