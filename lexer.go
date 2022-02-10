@@ -582,7 +582,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		ch = s.next()
 	}
 	//Always check multi first because in some languages multi starts with the same characters as single line comments (Lua)
-	for v := range Extensions {
+	for range Extensions {
 		if isMulti == true {
 			return Comment
 			//curext := Extensions[v].ext
