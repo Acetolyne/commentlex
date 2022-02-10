@@ -179,10 +179,11 @@ type Scanner struct {
 	lastCharLen  int // length of last character in bytes
 
 	// Comment characters to search for based on file type
-	CurSingleComment string
-	CurMultiStart    string
-	CurMultiEnd      string
-	CommentStatus    map[int]string
+	CurSingleComment    string
+	CurMultiStart       string
+	CurMultiEnd         string
+	CommentStatusSingle map[int]string
+	CommentStatusMulti  map[int]string
 
 	// Token text buffer
 	// Typically, token text is stored completely in srcBuf, but in general
@@ -239,10 +240,13 @@ func (s *Scanner) Init(file string) *Scanner {
 	s.singlePossible = true
 	s.multiPossible = true
 	// for v := range Extensions {
-	// 	s.CommentStatus[v] = ""
+	// 	s.CommentStatusSingle[v] = ""
 	// }
-	if s.CommentStatus == nil {
-		s.CommentStatus = make(map[int]string)
+	if s.CommentStatusSingle == nil {
+		s.CommentStatusSingle = make(map[int]string)
+	}
+	if s.CommentStatusMulti == nil {
+		s.CommentStatusMulti = make(map[int]string)
 	}
 
 	// Get the filetype so we can set the comment characters for this scan
@@ -636,9 +640,10 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 	// }
 	//@todo check until \n if it matches multiline comment then continue to end of comment then return Comment elseif it matches single line comment then return Comment else return ch
 	isSingle := false
+	isMulti := false
 	//MultiStartPos := 0
 	//MultiEndPos := 0
-	//s.CommentStatus := make(map[int]string)
+	//s.CommentStatusSingle := make(map[int]string)
 	//Check the line until \n and see if we have the start of a comment any multi or any single
 	for ch != '\n' && ch >= 0 {
 		//check all the Extensions that match filetype
@@ -647,70 +652,68 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 
 			curext := Extensions[v].ext
 			for ext := range curext {
-				//fmt.Println("POS:", s.Pos())
 				if s.srcType == curext[ext] {
-					//e++
-					//fmt.Println("Extension:", e, curext[ext])
-					//for ch != '\n' {
-					curlen := len(s.CommentStatus[v])
-					fmt.Println("Curlen:", curlen)
+					curlensingle := len(s.CommentStatusSingle[v])
+					curlenmulti := len(s.CommentStatusMulti[v])
 					if Extensions[v].startSingle != "" {
-						//fmt.Println("COMP:", s.CommentStatus[v], "&", Extensions[v].startSingle) //LOOK AT THIS BACKWARDS SHIT!
-						// 	//if s.CommentStatus[v] != Extensions[v].startSingle { //If we already have a full match then skip it
-						//fmt.Println("curlenofsinglechars:", len(string(Extensions[v].startSingle)))
-						fmt.Println("ExtensionNUM:", v, "FileExt:", curext[ext], "StartSingle:", Extensions[v].startSingle, "CH:", string(ch), "Curlen:", curlen)
-						if curlen < len(string(Extensions[v].startSingle)) {
-							if string(ch) == string(Extensions[v].startSingle[curlen]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+						//fmt.Println("ExtensionNUM:", v, "FileExt:", curext[ext], "StartSingle:", Extensions[v].startSingle, "CH:", string(ch), "Curlen:", curlen)
+						if curlensingle < len(string(Extensions[v].startSingle)) {
+							if string(ch) == string(Extensions[v].startSingle[curlensingle]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 								fmt.Println("setting true")
-								s.CommentStatus[v] += string(ch)
-								if len(s.CommentStatus[v]) == len(Extensions[v].startSingle) {
+								s.CommentStatusSingle[v] += string(ch)
+								if len(s.CommentStatusSingle[v]) == len(Extensions[v].startSingle) {
 									isSingle = true
 								}
-								// for ch != '\n' {
-								// 	ch = s.next()
-								// }
-								//return Comment
 							} else {
-								s.CommentStatus[v] = ""
+								s.CommentStatusSingle[v] = ""
 
 							}
-							//fmt.Println(s.CommentStatus)
-							// 	if s.CommentStatus[v] == Extensions[v].startSingle {
-							// 		fmt.Println("Returning!!!!!!!!!")
-							// 		return Comment
-							// 	}
-							// 	// } else {
-							// 	// 	return Comment
-							// 	// }
 						}
 					}
-					//break
-					//}
+					if Extensions[v].startMulti != "" {
+						if curlenmulti < len(string(Extensions[v].startMulti)) {
+							if string(ch) == string(Extensions[v].startMulti[curlenmulti]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+								fmt.Println("setting true")
+								s.CommentStatusMulti[v] += string(ch)
+								if len(s.CommentStatusMulti[v]) == len(Extensions[v].startMulti) {
+									isMulti = true
+								}
+							} else {
+								s.CommentStatusMulti[v] = ""
+
+							}
+						}
+					}
 				}
 			}
 		}
 		ch = s.next()
 	}
+	//Always check multi first because in some languages multi starts with the same characters as single line comments (Lua)
+	for range Extensions {
+		if isMulti == true {
+			return Comment
+		}
+	}
 	for range Extensions {
 		if isSingle == true {
-			fmt.Println("Triggered")
 			return Comment
 		}
 	}
 	return ch
 	//fmt.Println(string(ch))
 	// for v := range Extensions {
-	// 	if s.CommentStatus[v] == Extensions[v].startSingle {
+	// 	if s.CommentStatusSingle[v] == Extensions[v].startSingle {
 	// 		return Comment
 	// 	}
 	// }
 	//return ch
-	// fmt.Println(s.CommentStatus)
-	// for i, v := range s.CommentStatus {
+	// fmt.Println(s.CommentStatusSingle)
+	// for i, v := range s.CommentStatusSingle {
 	// 	fmt.Println(i, ")", v)
 	// 	//Always check for multiline comments first because some languages start their single line and multi line comments with the same characters (Lua)
 	// 	//@todo add multiline comment checking above single line checking
-	// 	if s.CommentStatus[i] == s.CurSingleComment {
+	// 	if s.CommentStatusSingle[i] == s.CurSingleComment {
 	// 		return Comment
 	// 	}
 	// }
