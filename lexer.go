@@ -621,6 +621,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 					}
 				}
 			}
+			fmt.Println("NEXT")
 			ch = s.next()
 		}
 	}
