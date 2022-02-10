@@ -589,6 +589,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 		ch = s.next()
 	}
 	//Always check multi first because in some languages multi starts with the same characters as single line comments (Lua)
+	//@todo fix issue where anything after multiline comment is not returned as a comment
 	for v := range Extensions {
 		if isMulti == true {
 			for ch != EOF {
@@ -598,6 +599,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 				if Extensions[v].endMulti != "" {
 					if curlenmultiend < len(string(Extensions[v].endMulti)) {
 						if string(ch) == string(Extensions[v].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+							fmt.Println("adding ch")
 							s.CommentStatusMultiEnd[v] += string(ch)
 						} else {
 							s.CommentStatusMulti[v] = ""
