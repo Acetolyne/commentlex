@@ -597,6 +597,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 				curlenmultiend := len(s.CommentStatusMultiEnd[v])
 				fmt.Println("ehh?")
 				if Extensions[v].endMulti != "" {
+					fmt.Println(Extensions[v].endMulti)
 					if curlenmultiend < len(string(Extensions[v].endMulti)) {
 						if string(ch) == string(Extensions[v].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 							fmt.Println("adding ch")
