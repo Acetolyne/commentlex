@@ -538,128 +538,20 @@ func digitVal(ch rune) int {
 	return 16 // larger than any legal digit val
 }
 
-// func (s *Scanner) scanComment(ch rune) (rune, bool, bool) {
-// 	x := 0
-// 	e := 0
-// 	s.singlePossible = true
-// 	s.multiPossible = true
-// 	var sval bool
-// 	var mval bool
-// 	match := s.CurSingleComment + s.Match
-// 	sMatch := []byte(string(match))
-// 	mMatch := []byte(string(s.CurMultiStart))
-// 	eMatch := []byte(string(s.CurMultiEnd))
-// 	var endval string
-// 	for {
-// 		//If there is a possibility that it is a single line comment based on the filetype
-// 		if s.singlePossible {
-// 			if ch != '\n' && ch >= 0 {
-// 				if x < len([]byte(string(sMatch))) {
-// 					if string(sMatch[x]) != string(ch) {
-// 						s.singlePossible = false
-// 					}
-// 				}
-// 			} else {
-// 				if x < len([]byte(string(sMatch)))-1 {
-// 					return ch, false, mval
-// 				} else {
-// 					return ch, true, mval
-// 				}
-// 			}
-// 		}
-// 		//If there is a possibility that it is a multi line comment based on the filetype
-// 		if s.multiPossible {
-// 			mval = false
-// 			//check for the start of the comment
-// 			if x < len([]byte(string(mMatch))) {
-// 				if string(mMatch[x]) != string(ch) {
-// 					SubCheck = ""
-// 					s.multiPossible = false
-// 				}
-// 			} else {
-// 				if ch < 0 {
-// 					SubCheck = ""
-// 					return ch, sval, false
-// 				}
-// 				if s.CurMultiEnd != "" && string(eMatch[e]) == string(ch) {
-// 					endval += string(ch)
-// 					e++
-// 				} else {
-// 					endval = ""
-// 					e = 0
-// 				}
-// 				if s.CurMultiEnd != "" && endval == s.CurMultiEnd {
-// 					e = 0
-// 					endval = ""
-// 					s.singlePossible = true
-// 					s.multiPossible = true
-// 					//fmt.Println("Matching: ", SubCheck, s.Match)
-// 					if strings.Contains(SubCheck, string(s.Match)) {
-// 						return ch, sval, true
-// 					} else {
-// 						SubCheck = ""
-// 						return ch, sval, false
-// 					}
-// 				}
-// 			}
-
-// 		}
-// 		if s.singlePossible || s.multiPossible {
-// 			if s.multiPossible {
-// 				SubCheck += string(ch)
-// 			}
-// 			x++
-// 			ch = s.next()
-// 		} else {
-// 			SubCheck = ""
-// 			fmt.Println("CommentScanChValue:" + string(ch))
-// 			return ch, sval, mval
-// 		}
-
-// 	}
-// }
-
 //scanComment scans current line or lines and returns if it is a comment or not
 func (s *Scanner) scanComment(ch rune, t string) rune {
-	//mmatch := []rune(s.CurMultiStart)
-	//@todo keep going until the newline
-	//fmt.Println(s.line, ":", s.column, string(ch))
-	//curcol := s.column
-	//x := 0
-	// for v := range Extensions {
-	// 	s.CurSingleComment = Extensions[v].startSingle
-	// 	s.CurMultiStart = Extensions[v].startMulti
-	// 	s.CurMultiEnd = Extensions[v].endMulti
-
-	// for {
-	// 	if ch != '\n' && ch >= 0 {
-	// 		return Comment
-	// 	} else {
-	// 		ch = s.next()
-	// 	}
-	// }
-	//@todo check until \n if it matches multiline comment then continue to end of comment then return Comment elseif it matches single line comment then return Comment else return ch
 	isSingle := false
 	isMulti := false
-	//MultiStartPos := 0
-	//MultiEndPos := 0
-	//s.CommentStatusSingle := make(map[int]string)
-	//Check the line until \n and see if we have the start of a comment any multi or any single
 	for ch != '\n' && ch >= 0 {
-		//check all the Extensions that match filetype
 		for v := range Extensions {
-			//set a dict like {extension number: current matching characters} ex: {0:0, 1:0, 2:0}
-
 			curext := Extensions[v].ext
 			for ext := range curext {
 				if s.srcType == curext[ext] {
 					curlensingle := len(s.CommentStatusSingle[v])
 					curlenmulti := len(s.CommentStatusMulti[v])
 					if Extensions[v].startSingle != "" {
-						//fmt.Println("ExtensionNUM:", v, "FileExt:", curext[ext], "StartSingle:", Extensions[v].startSingle, "CH:", string(ch), "Curlen:", curlen)
 						if curlensingle < len(string(Extensions[v].startSingle)) {
 							if string(ch) == string(Extensions[v].startSingle[curlensingle]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-								fmt.Println("setting true")
 								s.CommentStatusSingle[v] += string(ch)
 								if len(s.CommentStatusSingle[v]) == len(Extensions[v].startSingle) {
 									isSingle = true
@@ -673,7 +565,6 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 					if Extensions[v].startMulti != "" {
 						if curlenmulti < len(string(Extensions[v].startMulti)) {
 							if string(ch) == string(Extensions[v].startMulti[curlenmulti]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-								fmt.Println("setting true")
 								s.CommentStatusMulti[v] += string(ch)
 								if len(s.CommentStatusMulti[v]) == len(Extensions[v].startMulti) {
 									isMulti = true
@@ -689,10 +580,10 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		}
 		ch = s.next()
 	}
-	fmt.Println("Multi:", isMulti, "Single:", isSingle)
 	//Always check multi first because in some languages multi starts with the same characters as single line comments (Lua)
 	for range Extensions {
 		if isMulti == true {
+			//@todo if it is a multiline comment we need to call s.next until we reach the end of the comment then return Comment
 			return Comment
 		}
 	}
@@ -702,87 +593,6 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		}
 	}
 	return ch
-	//fmt.Println(string(ch))
-	// for v := range Extensions {
-	// 	if s.CommentStatusSingle[v] == Extensions[v].startSingle {
-	// 		return Comment
-	// 	}
-	// }
-	//return ch
-	// fmt.Println(s.CommentStatusSingle)
-	// for i, v := range s.CommentStatusSingle {
-	// 	fmt.Println(i, ")", v)
-	// 	//Always check for multiline comments first because some languages start their single line and multi line comments with the same characters (Lua)
-	// 	//@todo add multiline comment checking above single line checking
-	// 	if s.CommentStatusSingle[i] == s.CurSingleComment {
-	// 		return Comment
-	// 	}
-	// }
-	//If yes and is single then do s.next until we get to the end of the line then return Comment
-	//If yes and is multi then dont stop at newline go until we match the end of comment chars then return Comment
-	// if isSingle == true && ch == '\n' {
-	// 	isSingle = false
-	// 	return Comment
-	// }
-	// isSingle = false
-	//Multi comment checking
-	//iterate to next ch only after checking both single and multi
-	// ch = s.next()
-	//return ch
-
-	//ext := Extensions[v].ext
-	//for e := range ext {
-	// 		// 	//Reset the position to begining of same line
-	// 		// 	//s.tokPos = -1
-	// 		if ext[e] == s.srcType {
-	// 			smatch := []rune(s.CurSingleComment)
-
-	// 			// 		for ch != '\n' && ch >= 0 {
-	// 			//curpos := s.tokPos
-	// 			//This only works for single line comments
-	// 			for ch != '\n' && ch >= 0 {
-	// 				for x = 0; x < len(smatch); x++ {
-	// 					if string(smatch[x]) == string(ch) {
-	// 						fmt.Println("at position", x, "of", len(smatch))
-	// 						//If we have reached the end of the singlecomment characters and they all match return Comment else just keep iterating over the characters
-	// 						if x == len(smatch)-1 {
-	// 							return Comment
-	// 						}
-
-	// 					} else {
-	// 						x = 0
-	// 					}
-
-	// 					// 				fmt.Println(string(smatch[x]), string(ch))
-	// 					// 				// if string(smatch[x]) != string(ch) {
-	// 					// 				// 	break
-	// 					// 				// 	// 	} else {
-	// 					// 				// 	// 		s.column = curcol
-	// 					// 				// 	// 		break
-	// 					// 				// }
-	// 					// 			}
-	// 					// 			//ch = s.next()
-	// 					// 			//return Comment
-
-	// 					// 			//get current pos
-	// 					// 			//for cur extension iterate checking that each character matches
-	// 					// 			//if it dies return comment
-	// 					// 			//if it no longer matches reset positon for next extension
-	// 					// 			//if ch matches the single comment characters plus any matching characters
-	// 					// 			//return Comment
-	// 					//ch = s.next()
-
-	// 				}
-	// 				ch = s.next()
-	// 			}
-	// 			//ch = s.next()
-	// 			// 		//ch = Comment
-	// 		}
-	// 		//ch = s.next()
-	//}
-	// ch = s.next()
-	// }
-	// return Comment
 }
 
 // Scan reads the next token or Unicode character from source and returns it.
