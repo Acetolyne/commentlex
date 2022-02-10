@@ -596,7 +596,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 				curlenmultiend := len(s.CommentStatusMultiEnd[v])
 				if Extensions[v].endMulti != "" {
 					if ch == '\n' {
-						space := []rune{' '}
+						space := []rune{'\u0020'}
 						ch = space[0]
 						ch = s.next()
 					}
