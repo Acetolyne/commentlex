@@ -20,7 +20,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 	"unicode"
 	"unicode/utf8"
 )
@@ -606,11 +605,13 @@ func (s *Scanner) scanComment(ch rune) rune {
 					}
 					if curlenmultiend == len(string(Extensions[v].endMulti)) {
 						if s.Match != "" {
-							if strings.Contains(multicheck, s.Match) {
-								return Comment
-							} else {
-								return ch
-							}
+							fmt.Println("Trying to match")
+							return Comment
+							// if strings.Contains(multicheck, s.Match) {
+							// 	return Comment
+							// } else {
+							// 	return ch
+							// }
 						} else {
 							fmt.Println("MATCH is empty")
 							return Comment
