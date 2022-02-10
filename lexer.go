@@ -594,7 +594,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 		for ch != EOF {
 			multicheck += string(ch)
 			curlenmultiend := len(s.CommentStatusMultiEnd[s.MultiExtNum])
-			fmt.Println("ehh?")
 			if Extensions[s.MultiExtNum].endMulti != "" {
 				fmt.Println(Extensions[s.MultiExtNum].endMulti)
 				if curlenmultiend < len(string(Extensions[s.MultiExtNum].endMulti)) {
@@ -607,7 +606,8 @@ func (s *Scanner) scanComment(ch rune) rune {
 					}
 				}
 				if curlenmultiend == len(string(Extensions[s.MultiExtNum].endMulti)) {
-					if s.Match != "" {
+					fmt.Println("SM:", s.Match)
+					if s.Match == "" {
 						fmt.Println("Trying to match")
 						return Comment
 						// if strings.Contains(multicheck, s.Match) {
