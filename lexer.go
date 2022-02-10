@@ -547,7 +547,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 	isSingle := false
 	isMulti := false
 	for ch != '\n' && ch >= 0 {
-		fmt.Println(ch, string(ch))
 		for v := range Extensions {
 			curext := Extensions[v].ext
 			for ext := range curext {
@@ -588,18 +587,9 @@ func (s *Scanner) scanComment(ch rune) rune {
 	//Always check multi first because in some languages multi starts with the same characters as single line comments (Lua)
 	for v := range Extensions {
 		if isMulti == true {
-			//return Comment
-			curext := Extensions[v].ext
-			fmt.Println(curext)
-
 			for ch != EOF {
 				curlenmultiend := len(s.CommentStatusMultiEnd[v])
 				if Extensions[v].endMulti != "" {
-					// if ch == '\n' {
-					// 	space := []rune{'\u0020'}
-					// 	ch = space[0]
-					// 	fmt.Println("SET", ch, string(ch))
-					// }
 					if curlenmultiend < len(string(Extensions[v].endMulti)) {
 						if string(ch) == string(Extensions[v].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 							s.CommentStatusMultiEnd[v] += string(ch)
