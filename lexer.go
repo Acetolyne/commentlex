@@ -593,6 +593,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 	for v := range Extensions {
 		if isMulti == true {
 			for ch != EOF {
+				multicheck += string(ch)
 				curlenmultiend := len(s.CommentStatusMultiEnd[v])
 				if Extensions[v].endMulti != "" {
 					if curlenmultiend < len(string(Extensions[v].endMulti)) {
