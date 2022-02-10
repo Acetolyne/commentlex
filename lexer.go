@@ -623,7 +623,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 			}
 			ch = s.next()
 		}
-		return ch
 	}
 	for range Extensions {
 		if isSingle == true {
