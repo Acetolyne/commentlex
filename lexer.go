@@ -664,6 +664,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 								if string(ch) == string(Extensions[v].startSingle[curlen]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
 									fmt.Println("setting true")
 									s.CommentStatus[v] += string(ch)
+									ch = s.next()
 									return Comment
 								} else {
 									s.CommentStatus[v] = ""
