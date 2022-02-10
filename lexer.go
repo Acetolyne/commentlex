@@ -689,6 +689,7 @@ func (s *Scanner) scanComment(ch rune, t string) rune {
 		}
 		ch = s.next()
 	}
+	fmt.Println("Multi:", isMulti, "Single:", isSingle)
 	//Always check multi first because in some languages multi starts with the same characters as single line comments (Lua)
 	for range Extensions {
 		if isMulti == true {
