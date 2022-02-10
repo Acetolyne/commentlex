@@ -603,7 +603,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 
 						}
 					}
-					if curlenmultiend == len(string(Extensions[v].endMulti)) {
+					if len(s.CommentStatusMultiEnd[v]) == len(string(Extensions[v].endMulti)) {
 						if s.Match != "" {
 							fmt.Println("Trying to match")
 							return Comment
