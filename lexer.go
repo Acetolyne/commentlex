@@ -642,9 +642,9 @@ func (s *Scanner) scanComment(ch rune) rune {
 	for ch != '\n' && ch >= 0 {
 		if ch == '\n' {
 			return Comment
-		} else {
-			ch = s.next()
 		}
+		ch = s.next()
+
 	}
 	return Comment
 }
