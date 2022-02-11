@@ -643,7 +643,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 		if ch == '\n' {
 			return Comment
 		} else {
-			s.next()
+			ch = s.next()
 		}
 	}
 	return Comment
