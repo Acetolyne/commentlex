@@ -545,100 +545,104 @@ func digitVal(ch rune) int {
 
 //scanComment scans current line or lines and returns if it is a comment or not
 func (s *Scanner) scanComment(ch rune) rune {
-	isSingle := false
-	isMulti := false
-	//multicheck := ""
-	for ch != '\n' && ch >= 0 {
-		for v := range Extensions {
-			curext := Extensions[v].ext
-			for ext := range curext {
-				if s.srcType == curext[ext] {
-					curlensingle := len(s.CommentStatusSingle[v])
-					//curlenmulti := len(s.CommentStatusMulti[v])
-					if Extensions[v].startSingle != "" {
-						if curlensingle < len(string(Extensions[v].startSingle)) {
-							if string(ch) == string(Extensions[v].startSingle[curlensingle]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-								s.CommentStatusSingle[v] += string(ch)
-								if len(s.CommentStatusSingle[v]) == len(Extensions[v].startSingle) {
-									isSingle = true
-								}
-							} else {
-								s.CommentStatusSingle[v] = ""
+	// isSingle := false
+	// isMulti := false
+	// //multicheck := ""
+	// for ch != '\n' && ch >= 0 {
+	// 	for v := range Extensions {
+	// 		curext := Extensions[v].ext
+	// 		for ext := range curext {
+	// 			if s.srcType == curext[ext] {
+	// 				curlensingle := len(s.CommentStatusSingle[v])
+	// 				//curlenmulti := len(s.CommentStatusMulti[v])
+	// 				if Extensions[v].startSingle != "" {
+	// 					if curlensingle < len(string(Extensions[v].startSingle)) {
+	// 						if string(ch) == string(Extensions[v].startSingle[curlensingle]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+	// 							s.CommentStatusSingle[v] += string(ch)
+	// 							if len(s.CommentStatusSingle[v]) == len(Extensions[v].startSingle) {
+	// 								isSingle = true
+	// 							}
+	// 						} else {
+	// 							s.CommentStatusSingle[v] = ""
 
-							}
-						}
-					}
-					// if Extensions[v].startMulti != "" {
-					// 	multicheck += string(ch)
-					// 	if curlenmulti < len(string(Extensions[v].startMulti)) {
-					// 		if string(ch) == string(Extensions[v].startMulti[curlenmulti]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-					// 			s.CommentStatusMulti[v] += string(ch)
-					// 			if len(s.CommentStatusMulti[v]) == len(Extensions[v].startMulti) {
-					// 				isMulti = true
-					// 				s.MultiExtNum = v
-					// 			}
-					// 		} else {
-					// 			s.CommentStatusMulti[v] = ""
+	// 						}
+	// 					}
+	// 				}
+	// 				// if Extensions[v].startMulti != "" {
+	// 				// 	multicheck += string(ch)
+	// 				// 	if curlenmulti < len(string(Extensions[v].startMulti)) {
+	// 				// 		if string(ch) == string(Extensions[v].startMulti[curlenmulti]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+	// 				// 			s.CommentStatusMulti[v] += string(ch)
+	// 				// 			if len(s.CommentStatusMulti[v]) == len(Extensions[v].startMulti) {
+	// 				// 				isMulti = true
+	// 				// 				s.MultiExtNum = v
+	// 				// 			}
+	// 				// 		} else {
+	// 				// 			s.CommentStatusMulti[v] = ""
 
-					// 		}
-					// 	}
-					// }
-				}
-			}
-		}
-		ch = s.next()
-	}
-	//Always check multi first because in some languages multi starts with the same characters as single line comments (Lua)
-	//@todo fix issue where anything after multiline comment is not returned as a comment
-	fmt.Println("isMulti: ", isMulti, "isSingle:", isSingle)
-	for v := range Extensions {
-		if isMulti == true {
-			if s.CommentStatusMulti[v] == Extensions[v].startMulti {
-				// 	for ch != EOF {
-				//  multicheck += string(ch)
-				// 		curlenmultiend := len(s.CommentStatusMultiEnd[s.MultiExtNum])
-				// 		if Extensions[s.MultiExtNum].endMulti != "" {
-				// 			fmt.Println(Extensions[s.MultiExtNum].endMulti)
-				// 			if curlenmultiend < len(string(Extensions[s.MultiExtNum].endMulti)) {
-				// 				if string(ch) == string(Extensions[s.MultiExtNum].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-				// 					fmt.Println("adding ch")
-				// 					s.CommentStatusMultiEnd[s.MultiExtNum] += string(ch)
-				// 				} else {
-				// 					s.CommentStatusMultiEnd[s.MultiExtNum] = ""
+	// 				// 		}
+	// 				// 	}
+	// 				// }
+	// 			}
+	// 		}
+	// 	}
+	// 	ch = s.next()
+	// }
+	// //Always check multi first because in some languages multi starts with the same characters as single line comments (Lua)
+	// //@todo fix issue where anything after multiline comment is not returned as a comment
+	// fmt.Println("isMulti: ", isMulti, "isSingle:", isSingle)
+	// for v := range Extensions {
+	// 	if isMulti == true {
+	// 		if s.CommentStatusMulti[v] == Extensions[v].startMulti {
+	// 			// 	for ch != EOF {
+	// 			//  multicheck += string(ch)
+	// 			// 		curlenmultiend := len(s.CommentStatusMultiEnd[s.MultiExtNum])
+	// 			// 		if Extensions[s.MultiExtNum].endMulti != "" {
+	// 			// 			fmt.Println(Extensions[s.MultiExtNum].endMulti)
+	// 			// 			if curlenmultiend < len(string(Extensions[s.MultiExtNum].endMulti)) {
+	// 			// 				if string(ch) == string(Extensions[s.MultiExtNum].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+	// 			// 					fmt.Println("adding ch")
+	// 			// 					s.CommentStatusMultiEnd[s.MultiExtNum] += string(ch)
+	// 			// 				} else {
+	// 			// 					s.CommentStatusMultiEnd[s.MultiExtNum] = ""
 
-				// 				}
-				// 			}
-				// 			if curlenmultiend == len(string(Extensions[s.MultiExtNum].endMulti)) {
-				// 				fmt.Println("SM:", s.Match)
-				// 				//@todo below is temp since flowcat passes this value in by default for testing only should check if not null
-				// 				if s.Match != "" {
-				// 					fmt.Println("Trying to match")
-				// 					return Comment
-				// 					// if strings.Contains(multicheck, s.Match) {
-				// 					// 	return Comment
-				// 					// } else {
-				// 					// 	return ch
-				// 					// }
-				// 				} else {
-				// 					return Comment
-				// 				}
-				// 			}
-				// 		}
-				// 		fmt.Println("NEXT")
-				// 		ch = s.next()
-				// 	}
-			}
-			s.CommentStatusMulti[v] = ""
-			s.CommentStatusMultiEnd[v] = ""
-		}
+	// 			// 				}
+	// 			// 			}
+	// 			// 			if curlenmultiend == len(string(Extensions[s.MultiExtNum].endMulti)) {
+	// 			// 				fmt.Println("SM:", s.Match)
+	// 			// 				//@todo below is temp since flowcat passes this value in by default for testing only should check if not null
+	// 			// 				if s.Match != "" {
+	// 			// 					fmt.Println("Trying to match")
+	// 			// 					return Comment
+	// 			// 					// if strings.Contains(multicheck, s.Match) {
+	// 			// 					// 	return Comment
+	// 			// 					// } else {
+	// 			// 					// 	return ch
+	// 			// 					// }
+	// 			// 				} else {
+	// 			// 					return Comment
+	// 			// 				}
+	// 			// 			}
+	// 			// 		}
+	// 			// 		fmt.Println("NEXT")
+	// 			// 		ch = s.next()
+	// 			// 	}
+	// 		}
+	// 		s.CommentStatusMulti[v] = ""
+	// 		s.CommentStatusMultiEnd[v] = ""
+	// 	}
+	// }
+	// for v := range Extensions {
+	// 	if isSingle == true {
+	// 		s.CommentStatusSingle[v] = ""
+	// 		return Comment
+	// 	}
+	// }
+	// return ch
+	if ch != '\n' && ch >= 0 {
+		s.next()
 	}
-	for v := range Extensions {
-		if isSingle == true {
-			s.CommentStatusSingle[v] = ""
-			return Comment
-		}
-	}
-	return ch
+	return Comment
 }
 
 // Scan reads the next token or Unicode character from source and returns it.
