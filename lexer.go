@@ -640,7 +640,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 	// }
 	// return ch
 	for ch != '\n' && ch >= 0 {
-		return ch
+		return Comment
 	}
 	return Comment
 }
