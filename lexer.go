@@ -642,7 +642,10 @@ func (s *Scanner) scanComment(ch rune) rune {
 	if ch != '\n' && ch >= 0 {
 		s.next()
 	}
-	return Comment
+	if ch == '\n' {
+		return Comment
+	}
+	return ch
 }
 
 // Scan reads the next token or Unicode character from source and returns it.
