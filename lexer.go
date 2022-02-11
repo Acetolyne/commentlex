@@ -547,14 +547,14 @@ func digitVal(ch rune) int {
 func (s *Scanner) scanComment(ch rune) rune {
 	isSingle := false
 	isMulti := false
-	multicheck := ""
+	//multicheck := ""
 	for ch != '\n' && ch >= 0 {
 		for v := range Extensions {
 			curext := Extensions[v].ext
 			for ext := range curext {
 				if s.srcType == curext[ext] {
 					curlensingle := len(s.CommentStatusSingle[v])
-					curlenmulti := len(s.CommentStatusMulti[v])
+					//curlenmulti := len(s.CommentStatusMulti[v])
 					if Extensions[v].startSingle != "" {
 						if curlensingle < len(string(Extensions[v].startSingle)) {
 							if string(ch) == string(Extensions[v].startSingle[curlensingle]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
@@ -568,21 +568,21 @@ func (s *Scanner) scanComment(ch rune) rune {
 							}
 						}
 					}
-					if Extensions[v].startMulti != "" {
-						multicheck += string(ch)
-						if curlenmulti < len(string(Extensions[v].startMulti)) {
-							if string(ch) == string(Extensions[v].startMulti[curlenmulti]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-								s.CommentStatusMulti[v] += string(ch)
-								if len(s.CommentStatusMulti[v]) == len(Extensions[v].startMulti) {
-									isMulti = true
-									s.MultiExtNum = v
-								}
-							} else {
-								s.CommentStatusMulti[v] = ""
+					// if Extensions[v].startMulti != "" {
+					// 	multicheck += string(ch)
+					// 	if curlenmulti < len(string(Extensions[v].startMulti)) {
+					// 		if string(ch) == string(Extensions[v].startMulti[curlenmulti]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
+					// 			s.CommentStatusMulti[v] += string(ch)
+					// 			if len(s.CommentStatusMulti[v]) == len(Extensions[v].startMulti) {
+					// 				isMulti = true
+					// 				s.MultiExtNum = v
+					// 			}
+					// 		} else {
+					// 			s.CommentStatusMulti[v] = ""
 
-							}
-						}
-					}
+					// 		}
+					// 	}
+					// }
 				}
 			}
 		}
