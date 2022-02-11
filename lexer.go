@@ -639,7 +639,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 	// 	}
 	// }
 	// return ch
-	if ch != '\n' && ch >= 0 {
+	for ch != '\n' && ch >= 0 {
 		s.next()
 	}
 	if ch == '\n' {
