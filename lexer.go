@@ -644,6 +644,8 @@ func (s *Scanner) scanComment(ch rune) rune {
 			fmt.Println(Extensions[v].startSingle)
 			if string(ch) == Extensions[v].startSingle {
 				s.CommentStatusSingle[v] += string(ch)
+			} else {
+				s.CommentStatusSingle[v] = ""
 			}
 			if s.CommentStatusSingle[v] == Extensions[v].startSingle {
 				s.CommentStatusSingle[v] = ""
