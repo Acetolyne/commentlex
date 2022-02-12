@@ -639,7 +639,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 	// 	}
 	// }
 	// return ch
-	for ch != '\n' && ch >= 0 {
+	for ch >= 0 {
 		for v := range Extensions {
 			for ch != EOF {
 				for _, c := range Extensions[v].startSingle {
