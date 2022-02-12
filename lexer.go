@@ -646,6 +646,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 					s.CommentStatusSingle[v] += string(ch)
 				}
 				if s.CommentStatusSingle[v] == Extensions[v].startSingle {
+					s.CommentStatusSingle[v] = ""
 					return Comment
 				}
 			}
@@ -653,7 +654,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 		ch = s.next()
 
 	}
-	return ch
+	return Comment
 }
 
 // Scan reads the next token or Unicode character from source and returns it.
