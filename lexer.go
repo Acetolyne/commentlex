@@ -640,21 +640,19 @@ func (s *Scanner) scanComment(ch rune) rune {
 	// }
 	// return ch
 	for ch != '\n' && ch >= 0 {
-		if ch == '\n' {
-			for v := range Extensions {
-				if string(ch) == Extensions[v].startSingle {
-					s.CommentStatusSingle[v] += string(ch)
-				}
-				if s.CommentStatusSingle[v] == Extensions[v].startSingle {
-					s.CommentStatusSingle[v] = ""
-					return Comment
-				}
-			}
-		}
 		ch = s.next()
 
 	}
-	return Comment
+	for v := range Extensions {
+		if string(ch) == Extensions[v].startSingle {
+			s.CommentStatusSingle[v] += string(ch)
+		}
+		if s.CommentStatusSingle[v] == Extensions[v].startSingle {
+			s.CommentStatusSingle[v] = ""
+			return Comment
+		}
+	}
+	return ch
 }
 
 // Scan reads the next token or Unicode character from source and returns it.
