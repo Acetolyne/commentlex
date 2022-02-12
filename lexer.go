@@ -544,7 +544,7 @@ func digitVal(ch rune) int {
 }
 
 //scanComment scans current line or lines and returns if it is a comment or not
-func (s *Scanner) scanComment(ch rune) rune {
+func (s *Scanner) ScanComment(ch rune) rune {
 	// isSingle := false
 	// isMulti := false
 	// //multicheck := ""
@@ -694,7 +694,7 @@ func (s *Scanner) Scan() rune {
 		break
 	default:
 		//@todo add more file types and comment characters
-		tok := s.scanComment(ch)
+		tok := s.ScanComment(ch)
 		s.tokEnd = s.srcPos - s.lastCharLen
 		s.ch = ch
 		return tok
