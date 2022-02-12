@@ -649,6 +649,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 				s.CommentStatusSingle[v] = ""
 				return Comment
 			}
+			ch = s.next()
 		}
 		ch = s.next()
 	}
