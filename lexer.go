@@ -641,7 +641,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 	// return ch
 	for ch != '\n' && ch >= 0 {
 		ch = s.next()
-
 	}
 	for v := range Extensions {
 		if string(ch) == Extensions[v].startSingle {
