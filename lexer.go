@@ -647,6 +647,9 @@ func (s *Scanner) scanComment(ch rune) rune {
 			}
 			if s.CommentStatusSingle[v] == Extensions[v].startSingle {
 				s.CommentStatusSingle[v] = ""
+				for ch != '\n' {
+					ch = s.next()
+				}
 				return Comment
 			}
 			ch = s.next()
