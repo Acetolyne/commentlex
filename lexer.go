@@ -643,11 +643,13 @@ func (s *Scanner) scanComment(ch rune) rune {
 		for v := range Extensions {
 			for ch != EOF {
 				for _, c := range Extensions[v].startSingle {
-					fmt.Println(Extensions[v].startSingle)
+					//fmt.Println(Extensions[v].startSingle)
 					//wtf am I doing?
 					if string(ch) == string(c) {
+						fmt.Println("TRUE")
 						s.CommentStatusSingle[v] += string(ch)
 						if s.CommentStatusSingle[v] == Extensions[v].startSingle {
+							fmt.Println("TRUE2")
 							s.CommentStatusSingle[v] = ""
 							for ch != '\n' {
 								ch = s.next()
