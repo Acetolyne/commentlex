@@ -13,8 +13,12 @@ func TestCommentScanAllExtensions(t *testing.T) {
 	var s lexer.Scanner
 	s.Init("tests/test.php")
 	s.Mode = lexer.ScanComments
-	s.Scan()
-	fmt.Println(s.TokenText())
+	tok := s.Scan()
+	for tok != lexer.EOF {
+		fmt.Println(s.TokenText())
+		tok = s.Scan()
+	}
+
 	// if total != 10 {
 	// 	t.Errorf("Sum was incorrect, got: %d, want: %d.", total, 10)
 	// }
