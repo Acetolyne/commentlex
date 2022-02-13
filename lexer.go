@@ -646,7 +646,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 
 			for v := range Extensions {
 				if Extensions[v].startSingle != "" {
-					fmt.Println(len(s.CommentStatusSingle[v]), len(Extensions[v].startSingle))
+					//fmt.Println(len(s.CommentStatusSingle[v]), len(Extensions[v].startSingle))
 					if len(s.CommentStatusSingle[v]) < len(Extensions[v].startSingle) {
 						if string(ch) == string(Extensions[v].startSingle[len(s.CommentStatusSingle[v])]) {
 							s.CommentStatusSingle[v] += string(ch)
@@ -675,7 +675,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 					s.CommentStatusMulti[v] = ""
 					s.CommentStatusMultiEnd[v] = ""
 				}
-				fmt.Println("EOL", isSingle, isMulti)
+				//fmt.Println("EOL", isSingle, isMulti)
 				if isSingle == true || isMulti == true {
 					isSingle = false
 					isMulti = false
