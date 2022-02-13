@@ -645,9 +645,13 @@ func (s *Scanner) scanComment(ch rune) rune {
 		for ch != EOF {
 
 			for v := range Extensions {
+				SingleFull := string(Extensions[v].startSingle)
 				if Extensions[v].startSingle != "" {
+					if s.Match != "" {
+						SingleFull = string(Extensions[v].startSingle) + s.Match
+					}
 					//fmt.Println(len(s.CommentStatusSingle[v]), len(Extensions[v].startSingle))
-					if len(s.CommentStatusSingle[v]) < len(Extensions[v].startSingle) {
+					if len(s.CommentStatusSingle[v]) < len(SingleFull) {
 						if string(ch) == string(Extensions[v].startSingle[len(s.CommentStatusSingle[v])]) {
 							s.CommentStatusSingle[v] += string(ch)
 						} else {
