@@ -670,6 +670,11 @@ func (s *Scanner) scanComment(ch rune) rune {
 				// }
 			}
 			if ch == '\n' {
+				for v := range Extensions {
+					s.CommentStatusSingle[v] = ""
+					s.CommentStatusMulti[v] = ""
+					s.CommentStatusMultiEnd[v] = ""
+				}
 				fmt.Println("EOL", isSingle, isMulti)
 				if isSingle == true || isMulti == true {
 					isSingle = false
