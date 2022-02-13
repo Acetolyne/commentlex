@@ -639,12 +639,20 @@ func (s *Scanner) scanComment(ch rune) rune {
 	// 	}
 	// }
 	// return ch
-	//isSingle := false
+	isSingle := false
 	for ch >= 0 {
 		for ch != EOF {
 			ch = s.next()
+			if string(ch) == "/" {
+				isSingle = true
+			}
 			if ch == '\n' {
-				return Comment
+				if isSingle == true {
+					isSingle = false
+					return Comment
+				} else {
+					return ch
+				}
 			}
 		}
 	}
