@@ -658,7 +658,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 					isSingle = false
 					return Comment
 				}
-				return ch
+				ch = s.next()
 			}
 			ch = s.next()
 		}
