@@ -14,6 +14,8 @@ $a = 0;
 
 # Comment 3
 
+$c = 0;
+
 //Comment 4
 
 /* Multiline
