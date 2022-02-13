@@ -15,8 +15,10 @@ func TestCommentScanAllExtensions(t *testing.T) {
 	s.Mode = lexer.ScanComments
 	tok := s.Scan()
 	for tok != lexer.EOF {
-		fmt.Println(s.TokenText())
-		tok = s.Scan()
+		if tok == lexer.Comment {
+			fmt.Println(s.TokenText())
+			tok = s.Scan()
+		}
 	}
 
 	// if total != 10 {
