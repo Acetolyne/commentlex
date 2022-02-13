@@ -648,13 +648,12 @@ func (s *Scanner) scanComment(ch rune) rune {
 					if len(s.CommentStatusSingle[v]) < len(Extensions[v].startSingle) {
 						if string(ch) == string(Extensions[v].startSingle[len(s.CommentStatusSingle[v])]) {
 							s.CommentStatusSingle[v] += string(ch)
-							if len(s.CommentStatusSingle[v]) == len(Extensions[v].startSingle) {
-								isSingle = true
-							}
 						} else {
 							s.CommentStatusSingle[v] = ""
 
 						}
+					} else {
+						isSingle = true
 					}
 				}
 			}
