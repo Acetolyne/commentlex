@@ -2,9 +2,9 @@
 
 $a = 0;
 
-# Comment 1
+#@todo Comment 1
 
-//Comment 2
+// @todo Comment 2
 
 /* Multiline
    Comment
@@ -19,6 +19,7 @@ $c = 0;
 //Comment 4
 
 /* Multiline
+   @todo
    Comment 2
  */
 
