@@ -643,8 +643,20 @@ func (s *Scanner) scanComment(ch rune) rune {
 	for ch >= 0 {
 		for ch != EOF {
 			ch = s.next()
-			if string(ch) == "/" {
-				isSingle = true
+			for v := range Extensions {
+				if Extensions[v].startSingle != "" {
+					if len(s.CommentStatusSingle[v]) < len(Extensions[v].startSingle) {
+						if string(ch) == string(Extensions[v].startSingle[len(s.CommentStatusSingle[v])]) {
+							s.CommentStatusSingle[v] += string(ch)
+							if len(s.CommentStatusSingle[v]) == len(Extensions[v].startSingle) {
+								isSingle = true
+							}
+						} else {
+							s.CommentStatusSingle[v] = ""
+
+						}
+					}
+				}
 			}
 			if ch == '\n' {
 				if isSingle == true {

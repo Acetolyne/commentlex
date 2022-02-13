@@ -8,4 +8,6 @@ $a = 0;
 
 # Comment 3
 
+//Comment 4
+
 ?>
