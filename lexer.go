@@ -658,6 +658,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 					isSingle = false
 					return Comment
 				} else {
+					fmt.Println("returning ch")
 					return ch
 				}
 			}
