@@ -658,7 +658,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 				}
 			}
 			if ch == '\n' {
-				fmt.Println("EOL")
+				fmt.Println("EOL", isSingle)
 				if isSingle == true {
 					isSingle = false
 					return Comment
