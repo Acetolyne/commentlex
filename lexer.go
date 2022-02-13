@@ -645,7 +645,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 			if ch != '\n' {
 				for v := range Extensions {
 					if Extensions[v].startSingle != "" {
-						//fmt.Println(v, ")", string(ch), Extensions[v].startSingle)
+						fmt.Println(v, ")", string(ch), Extensions[v].startSingle[0])
 						if string(ch) == string(Extensions[v].startSingle[0]) {
 							fmt.Println("setting true")
 							isSingle = true
