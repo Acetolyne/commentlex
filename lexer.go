@@ -642,7 +642,9 @@ func (s *Scanner) scanComment(ch rune) rune {
 	for ch >= 0 {
 		for ch != EOF {
 			for v := range Extensions {
-				fmt.Println(v, ")", string(ch), Extensions[v].startSingle)
+				if ch != '\n' {
+					fmt.Println(v, ")", string(ch), Extensions[v].startSingle)
+				}
 			}
 			ch = s.next()
 		}
