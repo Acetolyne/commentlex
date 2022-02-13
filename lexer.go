@@ -644,15 +644,19 @@ func (s *Scanner) scanComment(ch rune) rune {
 		for ch != EOF {
 			if ch != '\n' {
 				for v := range Extensions {
-					fmt.Println(v, ")", string(ch), Extensions[v].startSingle)
-					if string(ch) == string(Extensions[v].startSingle[0]) {
-						isSingle = true
+					if Extensions[v].startSingle != "" {
+						fmt.Println(v, ")", string(ch), Extensions[v].startSingle)
+						if string(ch) == string(Extensions[v].startSingle[0]) {
+							isSingle = true
+						}
 					}
 				}
 			} else {
 				if isSingle == true {
 					isSingle = false
 					return Comment
+				} else {
+					return ch
 				}
 			}
 			ch = s.next()
