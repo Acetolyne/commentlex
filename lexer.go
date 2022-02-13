@@ -639,31 +639,14 @@ func (s *Scanner) scanComment(ch rune) rune {
 	// 	}
 	// }
 	// return ch
-	isSingle := false
+	//isSingle := false
 	for ch >= 0 {
 		for ch != EOF {
-			if ch != '\n' {
-				for v := range Extensions {
-					if Extensions[v].startSingle != "" {
-						fmt.Println(v, ")", string(ch), string(Extensions[v].startSingle[0]))
-						if string(ch) == string(Extensions[v].startSingle[0]) {
-							fmt.Println("setting true")
-							isSingle = true
-						}
-					}
-				}
-			} else {
-				fmt.Println("EOL", isSingle)
-				if isSingle == true {
-					isSingle = false
-					return Comment
-				} else {
-					return ch
-				}
-			}
 			ch = s.next()
+			if ch == '\n' {
+				return Comment
+			}
 		}
-		ch = s.next()
 	}
 
 	return ch
