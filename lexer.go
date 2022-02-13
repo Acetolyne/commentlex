@@ -656,20 +656,20 @@ func (s *Scanner) scanComment(ch rune) rune {
 						isSingle = true
 					}
 				}
-				if Extensions[v].startMulti != "" {
-					if len(s.CommentStatusMulti[v]) < len(Extensions[v].startMulti) {
-						if string(ch) == string(Extensions[v].startMulti[len(s.CommentStatusMulti[v])]) {
-							s.CommentStatusMulti[v] += string(ch)
-						} else {
-							s.CommentStatusMulti[v] = ""
-						}
-					} else {
-						isMulti = true
-					}
-				}
+				// if Extensions[v].startMulti != "" {
+				// 	if len(s.CommentStatusMulti[v]) < len(Extensions[v].startMulti) {
+				// 		if string(ch) == string(Extensions[v].startMulti[len(s.CommentStatusMulti[v])]) {
+				// 			s.CommentStatusMulti[v] += string(ch)
+				// 		} else {
+				// 			s.CommentStatusMulti[v] = ""
+				// 		}
+				// 	} else {
+				// 		isMulti = true
+				// 	}
+				// }
 			}
 			if ch == '\n' {
-				//fmt.Println("EOL", isSingle)
+				fmt.Println("EOL", isSingle, isMulti)
 				if isSingle == true || isMulti == true {
 					isSingle = false
 					isMulti = false

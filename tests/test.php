@@ -10,8 +10,14 @@ $a = 0;
    Comment
  */
 
+ $b = 0;
+
 # Comment 3
 
 //Comment 4
+
+/* Multiline
+   Comment 2
+ */
 
 ?>
