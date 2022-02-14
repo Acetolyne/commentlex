@@ -20,6 +20,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"unicode"
 	"unicode/utf8"
 )
@@ -704,6 +705,9 @@ func (s *Scanner) scanComment(ch rune) rune {
 							} else {
 								fmt.Println(s.CommentStatusMultiAll, s.Match)
 								if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
+									if strings.Contains(s.CommentStatusMultiAll, s.Match) {
+										fmt.Println(s.Match, "in multiline comment")
+									}
 									return Comment
 								}
 							}
