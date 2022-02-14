@@ -717,7 +717,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 						}
 						ch = s.next()
 					}
-					fmt.Println(s.CommentStatusMultiAll[v])
 					if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
 						return Comment
 					}
