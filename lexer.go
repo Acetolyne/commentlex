@@ -641,14 +641,19 @@ func (s *Scanner) scanComment(ch rune) rune {
 	// return ch
 	isSingle := false
 	isMulti := false
+
 	for ch >= 0 {
 		for ch != EOF {
 
 			for v := range Extensions {
+				SingleFull := Extensions[v].startSingle
 				if Extensions[v].startSingle != "" {
+					if s.Match != "" {
+						SingleFull = Extensions[v].startSingle + string(s.Match)
+					}
 					//fmt.Println(len(s.CommentStatusSingle[v]), len(Extensions[v].startSingle))
-					if len(s.CommentStatusSingle[v]) < len(Extensions[v].startSingle) {
-						if string(ch) == string(Extensions[v].startSingle[len(s.CommentStatusSingle[v])]) {
+					if len(s.CommentStatusSingle[v]) < len(SingleFull) {
+						if string(ch) == string(SingleFull[len(s.CommentStatusSingle[v])]) {
 							s.CommentStatusSingle[v] += string(ch)
 						} else {
 							s.CommentStatusSingle[v] = ""
@@ -690,18 +695,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 								}
 							} else {
 								if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
-									if s.Match != "" {
-										if len(s.CommentStatusMultiEnd[v]) < len(s.Match) {
-											if s.CommentStatusMultiEnd[v] == string(s.Match[len(s.CommentStatusMultiEnd[v])]) {
-												s.CommentStatusMultiEnd[v] += string(ch)
-											} else {
-												s.CommentStatusMultiEnd[v] = ""
-											}
-										}
-										if s.CommentStatusMultiEnd[v] == s.Match {
-											return Comment
-										}
-									}
+									return Comment
 								}
 							}
 						}
