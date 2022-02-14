@@ -707,8 +707,9 @@ func (s *Scanner) scanComment(ch rune) rune {
 								if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
 									if strings.Contains(s.CommentStatusMultiAll, s.Match) {
 										fmt.Println(s.Match, "in multiline comment")
+										return Comment
 									}
-									return Comment
+									//return Comment
 								}
 							}
 						}
