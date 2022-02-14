@@ -670,10 +670,10 @@ func (s *Scanner) scanComment(ch rune) rune {
 					}
 				}
 				if Extensions[v].startMulti != "" {
+					s.CommentStatusMultiAll[v] += string(ch)
 					if len(s.CommentStatusMulti[v]) < len(Extensions[v].startMulti) {
 						if string(ch) == string(Extensions[v].startMulti[len(s.CommentStatusMulti[v])]) {
 							s.CommentStatusMulti[v] += string(ch)
-							s.CommentStatusMultiAll[v] += string(ch)
 						} else {
 							s.CommentStatusMulti[v] = ""
 							s.CommentStatusMultiAll[v] = ""
@@ -717,6 +717,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 						}
 						ch = s.next()
 					}
+					fmt.Println(s.CommentStatusMultiAll[v])
 					if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
 						return Comment
 					}
