@@ -684,15 +684,19 @@ func (s *Scanner) scanComment(ch rune) rune {
 					s.CommentStatusSingle[v] = ""
 					s.CommentStatusMulti[v] = ""
 					s.CommentStatusMultiEnd[v] = ""
+					s.CommentStatusMultiAll = ""
 				}
 				if isMulti == true {
+					v := s.MultiExtNum
+					s.CommentStatusMultiAll = s.CommentStatusMulti[v]
 					isSingle = false
 					isMulti = false
-					v := s.MultiExtNum
+
 					for ch != EOF {
 						if Extensions[v].endMulti != "" {
 							if len(s.CommentStatusMultiEnd[v]) < len(Extensions[v].endMulti) {
 								s.CommentStatusMultiAll += string(ch)
+								fmt.Println(s.CommentStatusMultiAll)
 								if string(ch) == string(Extensions[v].endMulti[len(s.CommentStatusMultiEnd[v])]) {
 									s.CommentStatusMultiEnd[v] += string(ch)
 								} else {
@@ -701,7 +705,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 							} else {
 								if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
 									if s.Match != "" {
-										fmt.Println(s.CommentStatusMultiAll)
 										if strings.Contains(s.CommentStatusMultiAll, s.Match) {
 											s.CommentStatusMultiAll = ""
 											return Comment
