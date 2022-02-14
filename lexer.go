@@ -691,6 +691,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 					s.CommentStatusMultiAll = s.CommentStatusMulti[v]
 					isSingle = false
 					isMulti = false
+					MultiEnded := false
 
 					for ch != EOF {
 						if Extensions[v].endMulti != "" {
@@ -705,15 +706,19 @@ func (s *Scanner) scanComment(ch rune) rune {
 							} else {
 								fmt.Println(s.CommentStatusMultiAll, s.Match)
 								if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
-									if strings.Contains(s.CommentStatusMultiAll, s.Match) {
-										fmt.Println(s.Match, "in multiline comment")
-										return Comment
-									}
+									MultiEnded = true
 									//return Comment
 								}
 							}
 						}
+						if MultiEnded == true {
+							break
+						}
 						ch = s.next()
+					}
+					if strings.Contains(s.CommentStatusMultiAll, s.Match) {
+						fmt.Println(s.Match, "in multiline comment")
+						return Comment
 					}
 				}
 				//fmt.Println("EOL", isSingle, isMulti)
