@@ -20,6 +20,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"unicode"
 	"unicode/utf8"
 )
@@ -697,7 +698,10 @@ func (s *Scanner) scanComment(ch rune) rune {
 								}
 							} else {
 								if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
-									return Comment
+									if s.Match != "" {
+										strings.Contains(s.CommentStatusMultiEnd[v], s.Match)
+										return Comment
+									}
 								}
 							}
 						}
