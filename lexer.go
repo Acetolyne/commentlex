@@ -697,6 +697,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 									s.CommentStatusMultiEnd[v] = ""
 								}
 							} else {
+								fmt.Println(s.CommentStatusMultiEnd[v])
 								if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
 									if s.Match != "" {
 										strings.Contains(s.CommentStatusMultiEnd[v], s.Match)
