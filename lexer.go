@@ -186,7 +186,7 @@ type Scanner struct {
 	CommentStatusSingle   map[int]string
 	CommentStatusMulti    map[int]string
 	CommentStatusMultiEnd map[int]string
-	CommentStatusMultiAll string
+	CommentStatusMultiAll map[int]string
 	MultiExtNum           int
 
 	// Token text buffer
@@ -670,8 +670,10 @@ func (s *Scanner) scanComment(ch rune) rune {
 					if len(s.CommentStatusMulti[v]) < len(Extensions[v].startMulti) {
 						if string(ch) == string(Extensions[v].startMulti[len(s.CommentStatusMulti[v])]) {
 							s.CommentStatusMulti[v] += string(ch)
+							s.CommentStatusMultiAll[v] += string(ch)
 						} else {
 							s.CommentStatusMulti[v] = ""
+							s.CommentStatusMultiAll[v] = ""
 						}
 					} else {
 						isMulti = true
@@ -684,11 +686,9 @@ func (s *Scanner) scanComment(ch rune) rune {
 					s.CommentStatusSingle[v] = ""
 					s.CommentStatusMulti[v] = ""
 					s.CommentStatusMultiEnd[v] = ""
-					s.CommentStatusMultiAll = ""
 				}
 				if isMulti == true {
 					v := s.MultiExtNum
-					s.CommentStatusMultiAll = s.CommentStatusMulti[v]
 					isSingle = false
 					isMulti = false
 					MultiEnded := false
@@ -696,7 +696,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 					for ch != EOF {
 						if Extensions[v].endMulti != "" {
 							if len(s.CommentStatusMultiEnd[v]) < len(Extensions[v].endMulti) {
-								s.CommentStatusMultiAll += string(ch)
+								s.CommentStatusMultiAll[v] += string(ch)
 
 								if string(ch) == string(Extensions[v].endMulti[len(s.CommentStatusMultiEnd[v])]) {
 									s.CommentStatusMultiEnd[v] += string(ch)
@@ -714,7 +714,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 						}
 						ch = s.next()
 					}
-					if strings.Contains(s.CommentStatusMultiAll, s.Match) {
+					if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
 						return Comment
 					}
 				}
