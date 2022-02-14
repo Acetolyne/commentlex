@@ -46,7 +46,7 @@ func TestCanUseMatchArgument(t *testing.T) {
 		tok = s.Scan()
 	}
 
-	want := "#@todo Comment 1// @todo Comment 2/* Multiline   Comment *//* Multiline   @todo   Comment 2 */"
+	want := "#@todo Comment 1// @todo Comment 2/* Multiline   @todo   Comment 2 */"
 	if res != want {
 		fmt.Println("got", res, "want", want)
 		t.Fatalf("ch was not checked against all extensions")
