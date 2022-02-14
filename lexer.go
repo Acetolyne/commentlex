@@ -711,6 +711,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 							}
 						}
 						if MultiEnded == true {
+							isMulti = false
 							break
 						}
 						ch = s.next()
