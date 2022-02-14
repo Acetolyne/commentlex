@@ -6,4 +6,4 @@ Comment
 
 --single line comment
 
---@todo singleline todo comment
+-- @todo singleline todo comment

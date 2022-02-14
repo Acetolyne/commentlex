@@ -49,7 +49,29 @@ func TestCanUseMatchArgument(t *testing.T) {
 	want := "#@todo Comment 1// @todo Comment 2/* Multiline   @todo   Comment 2 */"
 	if res != want {
 		fmt.Println("got", res, "want", want)
-		t.Fatalf("ch was not checked against all extensions")
+		t.Fatalf("s.Match not working as expected")
+	}
+}
+
+func TestWTFLua(t *testing.T) {
+	res := ""
+	var s lexer.Scanner
+	s.Init("tests/test.lua")
+	s.Mode = lexer.ScanComments
+	s.Match = "@todo"
+	tok := s.Scan()
+	for tok != lexer.EOF {
+		if tok == lexer.Comment {
+			line := strings.ReplaceAll(s.TokenText(), "\n", "")
+			res += strings.ReplaceAll(line, "\t", "")
+		}
+		tok = s.Scan()
+	}
+
+	want := "#@todo Comment 1// @todo Comment 2/* Multiline   @todo   Comment 2 */"
+	if res != want {
+		fmt.Println("got", res, "want", want)
+		t.Fatalf("Lua comment check is an ass")
 	}
 }
 
