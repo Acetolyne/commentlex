@@ -690,7 +690,18 @@ func (s *Scanner) scanComment(ch rune) rune {
 								}
 							} else {
 								if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
-									return Comment
+									if s.Match != "" {
+										if len(s.CommentStatusMultiEnd[v]) < len(s.Match) {
+											if s.CommentStatusMultiEnd[v] == string(s.Match[len(s.CommentStatusMultiEnd[v])]) {
+												s.CommentStatusMultiEnd[v] += string(ch)
+											} else {
+												s.CommentStatusMultiEnd[v] = ""
+											}
+										}
+										if s.CommentStatusMultiEnd[v] == s.Match {
+											return Comment
+										}
+									}
 								}
 							}
 						}
