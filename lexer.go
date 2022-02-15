@@ -708,6 +708,9 @@ func (s *Scanner) scanComment(ch rune) rune {
 							} else {
 								if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
 									MultiEnded = true
+									if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
+										return Comment
+									}
 								}
 							}
 						}
@@ -717,9 +720,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 							break
 						}
 						ch = s.next()
-					}
-					if MultiEnded == true && strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
-						return Comment
 					}
 				}
 				//fmt.Println("EOL", isSingle, isMulti)
