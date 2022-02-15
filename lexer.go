@@ -20,6 +20,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"unicode"
 	"unicode/utf8"
 )
@@ -644,7 +645,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 	// }
 	// return ch
 	isSingle := false
-	//isMulti := false
+	isMulti := false
 
 	for ch >= 0 {
 		for {
@@ -671,56 +672,56 @@ func (s *Scanner) scanComment(ch rune) rune {
 						isSingle = true
 					}
 				}
-				// if Extensions[v].startMulti != "" {
-				// 	s.CommentStatusMultiAll[v] += string(ch)
-				// 	if len(s.CommentStatusMulti[v]) < len(Extensions[v].startMulti) {
-				// 		if string(ch) == string(Extensions[v].startMulti[len(s.CommentStatusMulti[v])]) {
-				// 			s.CommentStatusMulti[v] += string(ch)
-				// 		} else {
-				// 			s.CommentStatusMulti[v] = ""
-				// 			s.CommentStatusMultiAll[v] = ""
-				// 		}
-				// 	} else {
-				// 		isMulti = true
-				// 		s.MultiExtNum = v
-				// 	}
-				// }
+				if Extensions[v].startMulti != "" {
+					s.CommentStatusMultiAll[v] += string(ch)
+					if len(s.CommentStatusMulti[v]) < len(Extensions[v].startMulti) {
+						if string(ch) == string(Extensions[v].startMulti[len(s.CommentStatusMulti[v])]) {
+							s.CommentStatusMulti[v] += string(ch)
+						} else {
+							s.CommentStatusMulti[v] = ""
+							s.CommentStatusMultiAll[v] = ""
+						}
+					} else {
+						isMulti = true
+						s.MultiExtNum = v
+					}
+				}
 			}
 			if ch == '\n' || ch == EOF {
 
-				// if isMulti == true {
-				// 	v := s.MultiExtNum
-				// 	isSingle = false
-				// 	isMulti = false
-				// 	MultiEnded := false
+				if isMulti == true {
+					v := s.MultiExtNum
+					isSingle = false
+					isMulti = false
+					MultiEnded := false
 
-				// 	for ch != EOF {
-				// 		if Extensions[v].endMulti != "" {
-				// 			if len(s.CommentStatusMultiEnd[v]) < len(Extensions[v].endMulti) {
-				// 				s.CommentStatusMultiAll[v] += string(ch)
+					for ch != EOF {
+						if Extensions[v].endMulti != "" {
+							if len(s.CommentStatusMultiEnd[v]) < len(Extensions[v].endMulti) {
+								s.CommentStatusMultiAll[v] += string(ch)
 
-				// 				if string(ch) == string(Extensions[v].endMulti[len(s.CommentStatusMultiEnd[v])]) {
-				// 					s.CommentStatusMultiEnd[v] += string(ch)
-				// 				} else {
-				// 					s.CommentStatusMultiEnd[v] = ""
-				// 				}
-				// 			} else {
-				// 				if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
-				// 					MultiEnded = true
-				// 				}
-				// 			}
-				// 		}
-				// 		if MultiEnded == true {
-				// 			isSingle = false
-				// 			isMulti = false
-				// 			break
-				// 		}
-				// 		ch = s.next()
-				// 	}
-				// 	if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
-				// 		return Comment
-				// 	}
-				// }
+								if string(ch) == string(Extensions[v].endMulti[len(s.CommentStatusMultiEnd[v])]) {
+									s.CommentStatusMultiEnd[v] += string(ch)
+								} else {
+									s.CommentStatusMultiEnd[v] = ""
+								}
+							} else {
+								if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
+									MultiEnded = true
+								}
+							}
+						}
+						if MultiEnded == true {
+							isSingle = false
+							isMulti = false
+							break
+						}
+						ch = s.next()
+					}
+					if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
+						return Comment
+					}
+				}
 				fmt.Println("EOL", isSingle)
 				for v := range Extensions {
 					s.CommentStatusSingle[v] = ""
@@ -729,7 +730,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 				}
 				if isSingle == true {
 					isSingle = false
-					//isMulti = false
+					isMulti = false
 					return Comment
 				}
 
