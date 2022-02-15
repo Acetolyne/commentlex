@@ -721,16 +721,17 @@ func (s *Scanner) scanComment(ch rune) rune {
 				// 	}
 				// }
 				fmt.Println("EOL", isSingle)
-				if isSingle == true {
-					isSingle = false
-					//isMulti = false
-					return Comment
-				}
 				for v := range Extensions {
 					s.CommentStatusSingle[v] = ""
 					s.CommentStatusMulti[v] = ""
 					s.CommentStatusMultiEnd[v] = ""
 				}
+				if isSingle == true {
+					isSingle = false
+					//isMulti = false
+					return Comment
+				}
+
 				return ch
 			}
 			ch = s.next()
