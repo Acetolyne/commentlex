@@ -20,7 +20,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 	"unicode"
 	"unicode/utf8"
 )
@@ -690,39 +689,40 @@ func (s *Scanner) scanComment(ch rune) rune {
 			if ch == '\n' || ch == EOF {
 
 				if isMulti == true {
-					v := s.MultiExtNum
+					//v := s.MultiExtNum
 					isSingle = false
 					isMulti = false
-					MultiEnded := false
+					return Comment
+					//MultiEnded := false
 
-					for MultiEnded == false {
-						if Extensions[v].endMulti != "" {
-							if len(s.CommentStatusMultiEnd[v]) < len(Extensions[v].endMulti) {
-								s.CommentStatusMultiAll[v] += string(ch)
+					// for MultiEnded == false {
+					// 	if Extensions[v].endMulti != "" {
+					// 		if len(s.CommentStatusMultiEnd[v]) < len(Extensions[v].endMulti) {
+					// 			s.CommentStatusMultiAll[v] += string(ch)
 
-								if string(ch) == string(Extensions[v].endMulti[len(s.CommentStatusMultiEnd[v])]) {
-									s.CommentStatusMultiEnd[v] += string(ch)
-								} else {
-									s.CommentStatusMultiEnd[v] = ""
-								}
-							} else {
-								if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
-									MultiEnded = true
-									isSingle = false
-									isMulti = false
-									if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
-										return Comment
-									}
-								}
-							}
-						}
-						// if MultiEnded == true {
-						// 	isSingle = false
-						// 	isMulti = false
-						// 	break
-						// }
-						ch = s.next()
-					}
+					// 			if string(ch) == string(Extensions[v].endMulti[len(s.CommentStatusMultiEnd[v])]) {
+					// 				s.CommentStatusMultiEnd[v] += string(ch)
+					// 			} else {
+					// 				s.CommentStatusMultiEnd[v] = ""
+					// 			}
+					// 		} else {
+					// 			if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
+					// 				MultiEnded = true
+					// 				isSingle = false
+					// 				isMulti = false
+					// 				if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
+					// 					return Comment
+					// 				}
+					// 			}
+					// 		}
+					// 	}
+					// 	// if MultiEnded == true {
+					// 	// 	isSingle = false
+					// 	// 	isMulti = false
+					// 	// 	break
+					// 	// }
+					// 	ch = s.next()
+					// }
 				}
 				//fmt.Println("EOL", isSingle, isMulti)
 				for v := range Extensions {
