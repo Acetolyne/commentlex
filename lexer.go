@@ -644,7 +644,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 	// }
 	// return ch
 	isSingle := false
-	isMulti := false
+	//isMulti := false
 
 	for ch >= 0 {
 		for ch != EOF {
@@ -723,7 +723,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 				//fmt.Println("EOL", isSingle, isMulti)
 				if isSingle == true {
 					isSingle = false
-					isMulti = false
+					//isMulti = false
 					return Comment
 				}
 				for v := range Extensions {
