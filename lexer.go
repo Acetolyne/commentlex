@@ -708,17 +708,19 @@ func (s *Scanner) scanComment(ch rune) rune {
 							} else {
 								if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
 									MultiEnded = true
+									isSingle = false
+									isMulti = false
 									if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
 										return Comment
 									}
 								}
 							}
 						}
-						if MultiEnded == true {
-							isSingle = false
-							isMulti = false
-							break
-						}
+						// if MultiEnded == true {
+						// 	isSingle = false
+						// 	isMulti = false
+						// 	break
+						// }
 						ch = s.next()
 					}
 				}
@@ -739,7 +741,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 			ch = s.next()
 		}
 	}
-
+	fmt.Println("Im down here")
 	return ch
 }
 
