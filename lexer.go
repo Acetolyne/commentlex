@@ -647,7 +647,10 @@ func (s *Scanner) scanComment(ch rune) rune {
 	isMulti := false
 
 	for ch >= 0 {
-		for ch != '\n' && ch != EOF {
+		for {
+			if ch == EOF {
+				break
+			}
 
 			for v := range Extensions {
 				SingleFull := Extensions[v].startSingle
