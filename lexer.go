@@ -720,7 +720,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 				// 		return Comment
 				// 	}
 				// }
-				//fmt.Println("EOL", isSingle, isMulti)
+				fmt.Println("EOL", isSingle)
 				if isSingle == true {
 					isSingle = false
 					//isMulti = false
