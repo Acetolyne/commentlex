@@ -697,11 +697,10 @@ func (s *Scanner) scanComment(ch rune) rune {
 			if ch == '\n' || ch == EOF {
 
 				if isMulti == true {
+					//v := s.MultiExtNum
+					isSingle = false
+					isMulti = false
 					return Comment
-					// 	//v := s.MultiExtNum
-					// 	isSingle = false
-					// 	isMulti = false
-					// 	return Comment
 					// 	//MultiEnded := false
 
 					// 	// for MultiEnded == false {
@@ -737,7 +736,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 
 				if isSingle == true {
 					isSingle = false
-					//isMulti = false
+					isMulti = false
 					return Comment
 				}
 
