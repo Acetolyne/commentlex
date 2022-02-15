@@ -707,6 +707,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 					if Extensions[v].endMulti != "" {
 						for MultiEnded == false {
 							// 	//
+							fmt.Println("MultiEnded:", MultiEnded, len(s.CommentStatusMultiEnd[v]), len(Extensions[v].endMulti))
 							if len(s.CommentStatusMultiEnd[v]) < len(Extensions[v].endMulti) {
 								s.CommentStatusMultiAll[v] += string(ch)
 
