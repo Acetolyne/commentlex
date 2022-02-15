@@ -686,7 +686,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 				// 	}
 				// }
 			}
-			if ch == '\n' {
+			if ch == '\n' || ch == EOF {
 
 				// if isMulti == true {
 				// 	v := s.MultiExtNum
