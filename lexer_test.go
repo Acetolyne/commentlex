@@ -71,7 +71,7 @@ func TestWTFLua(t *testing.T) {
 	want := "#@todo Comment 1// @todo Comment 2/* Multiline   @todo   Comment 2 */"
 	if res != want {
 		fmt.Println("got", res, "want", want)
-		t.Fatalf("Lua comment check is an ass")
+		t.Fatalf("Multiline comments are an ass")
 	}
 }
 
