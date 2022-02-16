@@ -53,7 +53,7 @@ func TestCanUseMatchArgument(t *testing.T) {
 	}
 }
 
-func TestWTFLua(t *testing.T) {
+func TestUseFileExtensions(t *testing.T) {
 	res := ""
 	var s lexer.Scanner
 	s.Mode = lexer.ScanComments
@@ -71,21 +71,28 @@ func TestWTFLua(t *testing.T) {
 	want := "--@todo singleline todo comment--[[Multiline Lua Comment with @todo in it --]]--@todo another inline comment"
 	if res != want {
 		fmt.Println("got", res, "want", want)
-		t.Fatalf("")
+		t.Fatalf("unable to use file extensions")
 	}
 }
 
-// func TestTemp(t *testing.T) {
-// 	var s lexer.Scanner
-// 	s.Init("tests/test.go")
-// 	s.Mode = lexer.ScanComments
-// 	tok := s.Scan()
-// 	for tok != lexer.EOF {
-// 		if tok == lexer.Comment {
-// 			fmt.Println(s.TokenText())
-// 		}
-// 		tok = s.Scan()
-// 	}
-// 	fmt.Println(s.TokenText())
+func TestMultipleCommentTypesPerFile(t *testing.T) {
+	res := ""
+	var s lexer.Scanner
+	s.Mode = lexer.ScanComments
+	s.Match = "@todo"
+	s.Init("tests/test.html")
+	tok := s.Scan()
+	for tok != lexer.EOF {
+		if tok == lexer.Comment {
+			line := strings.ReplaceAll(s.TokenText(), "\n", " ")
+			res += strings.ReplaceAll(line, "\t", "")
+		}
+		tok = s.Scan()
+	}
 
-// }
+	want := "--@todo singleline todo comment--[[Multiline Lua Comment with @todo in it --]]--@todo another inline comment"
+	if res != want {
+		fmt.Println("got", res, "want", want)
+		t.Fatalf("unable to detect multiple comment types in single file")
+	}
+}

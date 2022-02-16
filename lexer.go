@@ -712,6 +712,13 @@ func (s *Scanner) scanComment(ch rune) rune {
 					MultiEnded := false
 
 					if Extensions[v].endMulti != "" {
+						//If the first line is also the end of the multiline comment then return
+						if strings.Contains(s.CommentStatusMultiAll[v], Extensions[v].endMulti) {
+							MultiEnded = true
+							isSingle = false
+							isMulti = false
+							return Comment
+						}
 						for !MultiEnded {
 							// 	//
 							//fmt.Println("MultiEnded:", MultiEnded, len(s.CommentStatusMultiEnd[v]), len(Extensions[v].endMulti))
