@@ -725,6 +725,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 										return Comment
 									}
 								} else {
+									fmt.Println("sMatch is empty", s.Match)
 									return Comment
 								}
 							}
