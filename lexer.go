@@ -45,9 +45,10 @@ type CommentValues struct {
 
 //Initialize comment characters based on file extension
 //This may be more than one type per filetype as html can have javascript comments in them as well and there may be other filetypes that have multiple languages in them
+//@todo also allow a configuration file that imports additional filetypes
 var Extensions = []CommentValues{
 	{
-		ext:         []string{".go", ".py", ".js", ".rs", ".html", ".gohtml", ".php"},
+		ext:         []string{".go", ".py", ".js", ".rs", ".html", ".gohtml", ".php", ".c", ".cpp", ".h", ".class", ".jar", ".java", ".jsp"},
 		startSingle: "//",
 		startMulti:  "/*",
 		endMulti:    "*/",

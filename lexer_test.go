@@ -90,7 +90,7 @@ func TestMultipleCommentTypesPerFile(t *testing.T) {
 		tok = s.Scan()
 	}
 
-	want := "--@todo singleline todo comment--[[Multiline Lua Comment with @todo in it --]]--@todo another inline comment"
+	want := "<!-- @todo some comment -->//@todo some javascript comment in html<!-- @todo multiline comment in  html -->"
 	if res != want {
 		fmt.Println("got", res, "want", want)
 		t.Fatalf("unable to detect multiple comment types in single file")
