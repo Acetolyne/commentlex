@@ -648,9 +648,9 @@ func (s *Scanner) scanComment(ch rune) rune {
 
 	for ch >= 0 {
 		for {
-			if ch == EOF {
-				break
-			}
+			// if ch == EOF {
+			// 	break
+			// }
 
 			for v := range Extensions {
 				SingleFull := Extensions[v].startSingle
