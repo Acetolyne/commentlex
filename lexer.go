@@ -660,6 +660,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 						SingleFull = Extensions[v].startSingle + string(s.Match)
 						//fmt.Println("SingleFull:", SingleFull, s.CommentStatusSingle[v])
 					}
+					fmt.Println("singlefull:", SingleFull)
 					//fmt.Println(len(s.CommentStatusSingle[v]), len(Extensions[v].startSingle))
 					//fmt.Println(len(s.CommentStatusSingle[v]), len(SingleFull))
 					if len(s.CommentStatusSingle[v]) < len(SingleFull) {

@@ -57,7 +57,7 @@ func TestWTFLua(t *testing.T) {
 	res := ""
 	var s lexer.Scanner
 	s.Mode = lexer.ScanComments
-	//s.Match = "@todo"
+	s.Match = "@todo"
 	s.Init("tests/test.lua")
 	tok := s.Scan()
 	for tok != lexer.EOF {
