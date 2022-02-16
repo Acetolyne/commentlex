@@ -691,13 +691,12 @@ func (s *Scanner) scanComment(ch rune) rune {
 			}
 
 			if ch == '\n' || ch == EOF {
-				for v := range Extensions {
-					s.CommentStatusSingle[v] = ""
-					s.CommentStatusMulti[v] = ""
-					s.CommentStatusMultiEnd[v] = ""
-				}
-
 				if isMulti == true {
+					for v := range Extensions {
+						s.CommentStatusSingle[v] = ""
+						s.CommentStatusMulti[v] = ""
+						s.CommentStatusMultiEnd[v] = ""
+					}
 					v := s.MultiExtNum
 					isSingle = false
 					isMulti = false
