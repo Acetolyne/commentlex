@@ -655,40 +655,45 @@ func (s *Scanner) scanComment(ch rune) rune {
 
 			for v := range Extensions {
 				SingleFull := Extensions[v].startSingle
-				if Extensions[v].startSingle != "" {
-					if s.Match != "" {
-						SingleFull = Extensions[v].startSingle + string(s.Match)
-						//fmt.Println("SingleFull:", SingleFull, s.CommentStatusSingle[v])
-					}
-					//fmt.Println(len(s.CommentStatusSingle[v]), len(Extensions[v].startSingle))
-					//fmt.Println(len(s.CommentStatusSingle[v]), len(SingleFull))
-					if len(s.CommentStatusSingle[v]) < len(SingleFull) {
-						if string(ch) != " " {
-							//fmt.Println("Comparing:", string(ch), string(SingleFull[len(s.CommentStatusSingle[v])]))
-							if string(ch) == string(SingleFull[len(s.CommentStatusSingle[v])]) {
-								s.CommentStatusSingle[v] += string(ch)
-							} else {
-								s.CommentStatusSingle[v] = ""
+				curext := Extensions[v].ext
+				for ext := range curext {
+					if s.srcType == curext[ext] {
+						if Extensions[v].startSingle != "" {
+							if s.Match != "" {
+								SingleFull = Extensions[v].startSingle + string(s.Match)
+								//fmt.Println("SingleFull:", SingleFull, s.CommentStatusSingle[v])
+							}
+							//fmt.Println(len(s.CommentStatusSingle[v]), len(Extensions[v].startSingle))
+							//fmt.Println(len(s.CommentStatusSingle[v]), len(SingleFull))
+							if len(s.CommentStatusSingle[v]) < len(SingleFull) {
+								if string(ch) != " " {
+									//fmt.Println("Comparing:", string(ch), string(SingleFull[len(s.CommentStatusSingle[v])]))
+									if string(ch) == string(SingleFull[len(s.CommentStatusSingle[v])]) {
+										s.CommentStatusSingle[v] += string(ch)
+									} else {
+										s.CommentStatusSingle[v] = ""
+									}
+								}
+							}
+							if len(s.CommentStatusSingle[v]) == len(SingleFull) {
+								s.ExtNum = v
+								isSingle = true
 							}
 						}
-					}
-					if len(s.CommentStatusSingle[v]) == len(SingleFull) {
-						s.ExtNum = v
-						isSingle = true
-					}
-				}
-				if Extensions[v].startMulti != "" {
-					s.CommentStatusMultiAll[v] += string(ch)
-					if len(s.CommentStatusMulti[v]) < len(Extensions[v].startMulti) {
-						if string(ch) == string(Extensions[v].startMulti[len(s.CommentStatusMulti[v])]) {
-							s.CommentStatusMulti[v] += string(ch)
-						} else {
-							s.CommentStatusMulti[v] = ""
-							s.CommentStatusMultiAll[v] = ""
+						if Extensions[v].startMulti != "" {
+							s.CommentStatusMultiAll[v] += string(ch)
+							if len(s.CommentStatusMulti[v]) < len(Extensions[v].startMulti) {
+								if string(ch) == string(Extensions[v].startMulti[len(s.CommentStatusMulti[v])]) {
+									s.CommentStatusMulti[v] += string(ch)
+								} else {
+									s.CommentStatusMulti[v] = ""
+									s.CommentStatusMultiAll[v] = ""
+								}
+							} else {
+								isMulti = true
+								s.ExtNum = v
+							}
 						}
-					} else {
-						isMulti = true
-						s.ExtNum = v
 					}
 				}
 			}
