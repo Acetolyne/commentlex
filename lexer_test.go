@@ -13,8 +13,8 @@ import (
 func TestCommentScanAllExtensions(t *testing.T) {
 	res := ""
 	var s lexer.Scanner
-	s.Init("tests/test.php")
 	s.Mode = lexer.ScanComments
+	s.Init("tests/test.php")
 	tok := s.Scan()
 	for tok != lexer.EOF {
 		if tok == lexer.Comment {
@@ -34,9 +34,9 @@ func TestCommentScanAllExtensions(t *testing.T) {
 func TestCanUseMatchArgument(t *testing.T) {
 	res := ""
 	var s lexer.Scanner
-	s.Init("tests/test.php")
 	s.Mode = lexer.ScanComments
 	s.Match = "@todo"
+	s.Init("tests/test.php")
 	tok := s.Scan()
 	for tok != lexer.EOF {
 		if tok == lexer.Comment {
@@ -56,22 +56,22 @@ func TestCanUseMatchArgument(t *testing.T) {
 func TestWTFLua(t *testing.T) {
 	res := ""
 	var s lexer.Scanner
-	s.Init("tests/test.lua")
 	s.Mode = lexer.ScanComments
-	s.Match = ""
+	//s.Match = "@todo"
+	s.Init("tests/test.lua")
 	tok := s.Scan()
 	for tok != lexer.EOF {
 		if tok == lexer.Comment {
-			line := strings.ReplaceAll(s.TokenText(), "\n", "")
+			line := strings.ReplaceAll(s.TokenText(), "\n", " ")
 			res += strings.ReplaceAll(line, "\t", "")
 		}
 		tok = s.Scan()
 	}
 
-	want := "#@todo Comment 1// @todo Comment 2/* Multiline   @todo   Comment 2 */"
+	want := "--@todo singleline todo comment--[[Multiline Lua Comment with @todo in it --]]--@todo another inline comment"
 	if res != want {
 		fmt.Println("got", res, "want", want)
-		t.Fatalf("Multiline comments are an ass")
+		t.Fatalf("")
 	}
 }
 

@@ -20,6 +20,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"unicode"
 	"unicode/utf8"
 )
@@ -691,7 +692,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 			}
 
 			if ch == '\n' || ch == EOF {
-				if isMulti == true {
+				if isMulti {
 					for v := range Extensions {
 						s.CommentStatusSingle[v] = ""
 						s.CommentStatusMulti[v] = ""
@@ -704,7 +705,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 					MultiEnded := false
 
 					if Extensions[v].endMulti != "" {
-						for MultiEnded == false {
+						for !MultiEnded {
 							// 	//
 							//fmt.Println("MultiEnded:", MultiEnded, len(s.CommentStatusMultiEnd[v]), len(Extensions[v].endMulti))
 							if len(s.CommentStatusMultiEnd[v]) < len(Extensions[v].endMulti) {
@@ -718,14 +719,14 @@ func (s *Scanner) scanComment(ch rune) rune {
 								MultiEnded = true
 								isSingle = false
 								isMulti = false
-								return Comment
-								// if s.Match != "" {
-								// 	if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
-								// 		return Comment
-								// 	}
-								// } else {
-								// 	return Comment
-								// }
+								//return Comment
+								if s.Match != "" {
+									if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
+										return Comment
+									}
+								} else {
+									return Comment
+								}
 							}
 							// 	// 			if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
 							// 	// 				MultiEnded = true
@@ -747,7 +748,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 				}
 				//fmt.Println("EOL", isSingle, isMulti)
 
-				if isSingle == true {
+				if isSingle {
 					isSingle = false
 					isMulti = false
 					return Comment
