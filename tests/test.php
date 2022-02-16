@@ -6,6 +6,8 @@ $a = 0;
 
 // @todo Comment 2
 
+$a = 1;
+
 /* Multiline
    Comment
  */
