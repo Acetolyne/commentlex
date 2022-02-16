@@ -673,7 +673,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 						}
 					}
 					if len(s.CommentStatusSingle[v]) == len(SingleFull) {
-						fmt.Println("Set single TRUE")
 						s.ExtNum = v
 						isSingle = true
 					}
@@ -729,7 +728,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 										return Comment
 									}
 								} else {
-									fmt.Println("sMatch is empty", s.Match)
 									s.CommentStatusMultiEnd[v] = ""
 									return Comment
 								}
@@ -760,7 +758,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 					s.CommentStatusSingle[v] = ""
 					return Comment
 				}
-				fmt.Println("returning ch")
 				return ch
 			}
 			ch = s.next()
