@@ -187,7 +187,7 @@ type Scanner struct {
 	CommentStatusMulti    map[int]string
 	CommentStatusMultiEnd map[int]string
 	CommentStatusMultiAll map[int]string
-	MultiExtNum           int
+	ExtNum                int
 
 	// Token text buffer
 	// Typically, token text is stored completely in srcBuf, but in general
@@ -674,6 +674,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 					}
 					if len(s.CommentStatusSingle[v]) == len(SingleFull) {
 						fmt.Println("Set single TRUE")
+						s.ExtNum = v
 						isSingle = true
 					}
 				}
@@ -688,19 +689,19 @@ func (s *Scanner) scanComment(ch rune) rune {
 						}
 					} else {
 						isMulti = true
-						s.MultiExtNum = v
+						s.ExtNum = v
 					}
 				}
 			}
 
 			if ch == '\n' || ch == EOF {
+				v := s.ExtNum
 				if isMulti {
 					for v := range Extensions {
 						s.CommentStatusSingle[v] = ""
 						s.CommentStatusMulti[v] = ""
 						s.CommentStatusMultiEnd[v] = ""
 					}
-					v := s.MultiExtNum
 					isSingle = false
 					isMulti = false
 					//return Comment
@@ -724,10 +725,12 @@ func (s *Scanner) scanComment(ch rune) rune {
 								//return Comment
 								if s.Match != "" {
 									if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
+										s.CommentStatusMultiEnd[v] = ""
 										return Comment
 									}
 								} else {
 									fmt.Println("sMatch is empty", s.Match)
+									s.CommentStatusMultiEnd[v] = ""
 									return Comment
 								}
 							}
@@ -754,6 +757,7 @@ func (s *Scanner) scanComment(ch rune) rune {
 				if isSingle {
 					isSingle = false
 					isMulti = false
+					s.CommentStatusSingle[v] = ""
 					return Comment
 				}
 				fmt.Println("returning ch")
