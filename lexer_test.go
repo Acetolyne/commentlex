@@ -96,3 +96,25 @@ func TestMultipleCommentTypesPerFile(t *testing.T) {
 		t.Fatalf("unable to detect multiple comment types in single file")
 	}
 }
+
+func TestDefaultFileExtension(t *testing.T) {
+	res := ""
+	var s lexer.Scanner
+	s.Mode = lexer.ScanComments
+	s.Match = "@todo"
+	s.Init("tests/test")
+	tok := s.Scan()
+	for tok != lexer.EOF {
+		if tok == lexer.Comment {
+			line := strings.ReplaceAll(s.TokenText(), "\n", " ")
+			res += strings.ReplaceAll(line, "\t", "")
+		}
+		tok = s.Scan()
+	}
+
+	want := "//@todo Single Comment/* Multiline @todo some test Comment */"
+	if res != want {
+		fmt.Println("got", res, "want", want)
+		t.Fatalf("unable to detect multiple comment types in single file")
+	}
+}
