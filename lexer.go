@@ -51,6 +51,10 @@ type CommentValues struct {
 //@startSingle the start characters of a single line comment
 //@startMulti the start characters of a multi line comment
 //@endMulti the end characters of a multi line comment
+//
+//If a single line comment requires you to end the comment then you may use the startMulti and end Multi fields to specify the characters that end the comment
+//If the same filetype also has multiline comments that are different you may specify a new block with the same file extension and both will be processed.
+//
 //Template for new
 // {
 // 	ext:         []string{".FILEEXT"},
@@ -60,7 +64,7 @@ type CommentValues struct {
 // },
 var Extensions = []CommentValues{
 	{
-		ext:         []string{".go", ".py", ".js", ".rs", ".html", ".gohtml", ".php", ".c", ".cpp", ".h", ".class", ".jar", ".java", ".jsp"},
+		ext:         []string{"", ".go", ".py", ".js", ".rs", ".html", ".gohtml", ".php", ".c", ".cpp", ".h", ".class", ".jar", ".java", ".jsp"},
 		startSingle: "//",
 		startMulti:  "/*",
 		endMulti:    "*/",
@@ -72,7 +76,7 @@ var Extensions = []CommentValues{
 		endMulti:    "",
 	},
 	{
-		ext:         []string{".html", ".gohtml"},
+		ext:         []string{".html", ".gohtml", ".md"},
 		startSingle: "",
 		startMulti:  "<!--",
 		endMulti:    "-->",
@@ -82,6 +86,12 @@ var Extensions = []CommentValues{
 		startSingle: "--",
 		startMulti:  "--[[",
 		endMulti:    "--]]",
+	},
+	{
+		ext:         []string{".md"},
+		startSingle: "",
+		startMulti:  "{::comment}",
+		endMulti:    "{:/comment}",
 	},
 }
 
