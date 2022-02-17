@@ -5,3 +5,5 @@
 ##### Options
 <u>s.Match:</u> lexer option to add additional matching on comments. For single line comments this string needs to directly follow the characters that trigger the comment ignoring any whitespaces. For multiline comments this string needs to be anywhere in the comment.
 
+{::comment} @todo add script to automatically add supported filetypes to this readme {:/comment}
+
