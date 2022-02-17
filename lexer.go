@@ -87,12 +87,6 @@ var Extensions = []CommentValues{
 		startMulti:  "--[[",
 		endMulti:    "--]]",
 	},
-	{
-		ext:         []string{".md"},
-		startSingle: "",
-		startMulti:  "{::comment}",
-		endMulti:    "{:/comment}",
-	},
 }
 
 // IsValid reports whether the position is valid.
