@@ -21,7 +21,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"unicode"
+
+	//"unicode"
 	"unicode/utf8"
 )
 
@@ -45,7 +46,18 @@ type CommentValues struct {
 
 //Initialize comment characters based on file extension
 //This may be more than one type per filetype as html can have javascript comments in them as well and there may be other filetypes that have multiple languages in them
-//@todo also allow a configuration file that imports additional filetypes
+//Add new file extensions here to add support for them to get themn officially added to future builds please submit a feature request at https://github.com/Acetolyne/commentlex
+//@ext a list of file extensions that can be scanned, can be a single type or multiple types
+//@startSingle the start characters of a single line comment
+//@startMulti the start characters of a multi line comment
+//@endMulti the end characters of a multi line comment
+//Template for new
+// {
+// 	ext:         []string{".FILEEXT"},
+// 	startSingle: "//",
+// 	startMulti:  "/*",
+// 	endMulti:    "*/",
+// },
 var Extensions = []CommentValues{
 	{
 		ext:         []string{".go", ".py", ".js", ".rs", ".html", ".gohtml", ".php", ".c", ".cpp", ".h", ".class", ".jar", ".java", ".jsp"},
@@ -429,125 +441,131 @@ func (s *Scanner) error(msg string) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", pos, msg)
 }
 
-func (s *Scanner) errorf(format string, args ...interface{}) {
-	s.error(fmt.Sprintf(format, args...))
-}
+//@todo remove
+// func (s *Scanner) errorf(format string, args ...interface{}) {
+// 	s.error(fmt.Sprintf(format, args...))
+// }
+//@todo remove ------------------
+// func (s *Scanner) isIdentRune(ch rune, i int) bool {
+// 	if s.IsIdentRune != nil {
+// 		return s.IsIdentRune(ch, i)
+// 	}
+// 	return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch) && i > 0
+// }
 
-func (s *Scanner) isIdentRune(ch rune, i int) bool {
-	if s.IsIdentRune != nil {
-		return s.IsIdentRune(ch, i)
-	}
-	return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch) && i > 0
-}
+//@todo remove
+// func (s *Scanner) scanIdentifier() rune {
+// 	// we know the zero'th rune is OK; start scanning at the next one
+// 	ch := s.next()
+// 	for i := 1; s.isIdentRune(ch, i); i++ {
+// 		ch = s.next()
+// 	}
+// 	return ch
+// }
 
-func (s *Scanner) scanIdentifier() rune {
-	// we know the zero'th rune is OK; start scanning at the next one
-	ch := s.next()
-	for i := 1; s.isIdentRune(ch, i); i++ {
-		ch = s.next()
-	}
-	return ch
-}
+//@todo remove --------------------------------------------
+// func lower(ch rune) rune     { return ('a' - 'A') | ch } // returns lower-case ch iff ch is ASCII letter
+// func isDecimal(ch rune) bool { return '0' <= ch && ch <= '9' }
+// func isHex(ch rune) bool     { return '0' <= ch && ch <= '9' || 'a' <= lower(ch) && lower(ch) <= 'f' }
 
-func lower(ch rune) rune     { return ('a' - 'A') | ch } // returns lower-case ch iff ch is ASCII letter
-func isDecimal(ch rune) bool { return '0' <= ch && ch <= '9' }
-func isHex(ch rune) bool     { return '0' <= ch && ch <= '9' || 'a' <= lower(ch) && lower(ch) <= 'f' }
-
+//@todo remove ------------------------------------------------
 // digits accepts the sequence { digit | '_' } starting with ch0.
 // If base <= 10, digits accepts any decimal digit but records
 // the first invalid digit >= base in *invalid if *invalid == 0.
 // digits returns the first rune that is not part of the sequence
 // anymore, and a bitset describing whether the sequence contained
 // digits (bit 0 is set), or separators '_' (bit 1 is set).
-func (s *Scanner) digits(ch0 rune, base int, invalid *rune) (ch rune, digsep int) {
-	ch = ch0
-	if base <= 10 {
-		max := rune('0' + base)
-		for isDecimal(ch) || ch == '_' {
-			ds := 1
-			if ch == '_' {
-				ds = 2
-			} else if ch >= max && *invalid == 0 {
-				*invalid = ch
-			}
-			digsep |= ds
-			ch = s.next()
-		}
-	} else {
-		for isHex(ch) || ch == '_' {
-			ds := 1
-			if ch == '_' {
-				ds = 2
-			}
-			digsep |= ds
-			ch = s.next()
-		}
-	}
-	return
-}
+// func (s *Scanner) digits(ch0 rune, base int, invalid *rune) (ch rune, digsep int) {
+// 	ch = ch0
+// 	if base <= 10 {
+// 		max := rune('0' + base)
+// 		for isDecimal(ch) || ch == '_' {
+// 			ds := 1
+// 			if ch == '_' {
+// 				ds = 2
+// 			} else if ch >= max && *invalid == 0 {
+// 				*invalid = ch
+// 			}
+// 			digsep |= ds
+// 			ch = s.next()
+// 		}
+// 	} else {
+// 		for isHex(ch) || ch == '_' {
+// 			ds := 1
+// 			if ch == '_' {
+// 				ds = 2
+// 			}
+// 			digsep |= ds
+// 			ch = s.next()
+// 		}
+// 	}
+// 	return
+// }
+//@todo remove -------------------------------------------------
+// func litname(prefix rune) string {
+// 	switch prefix {
+// 	default:
+// 		return "decimal literal"
+// 	case 'x':
+// 		return "hexadecimal literal"
+// 	case 'o', '0':
+// 		return "octal literal"
+// 	case 'b':
+// 		return "binary literal"
+// 	}
+// }
 
-func litname(prefix rune) string {
-	switch prefix {
-	default:
-		return "decimal literal"
-	case 'x':
-		return "hexadecimal literal"
-	case 'o', '0':
-		return "octal literal"
-	case 'b':
-		return "binary literal"
-	}
-}
-
+//@todo remove -------------------------------------------------
 // invalidSep returns the index of the first invalid separator in x, or -1.
-func invalidSep(x string) int {
-	x1 := ' ' // prefix char, we only care if it's 'x'
-	d := '.'  // digit, one of '_', '0' (a digit), or '.' (anything else)
-	i := 0
+// func invalidSep(x string) int {
+// 	x1 := ' ' // prefix char, we only care if it's 'x'
+// 	d := '.'  // digit, one of '_', '0' (a digit), or '.' (anything else)
+// 	i := 0
 
-	// a prefix counts as a digit
-	if len(x) >= 2 && x[0] == '0' {
-		x1 = lower(rune(x[1]))
-		if x1 == 'x' || x1 == 'o' || x1 == 'b' {
-			d = '0'
-			i = 2
-		}
-	}
+// 	// a prefix counts as a digit
+// 	if len(x) >= 2 && x[0] == '0' {
+// 		x1 = lower(rune(x[1]))
+// 		if x1 == 'x' || x1 == 'o' || x1 == 'b' {
+// 			d = '0'
+// 			i = 2
+// 		}
+// 	}
 
-	// mantissa and exponent
-	for ; i < len(x); i++ {
-		p := d // previous digit
-		d = rune(x[i])
-		switch {
-		case d == '_':
-			if p != '0' {
-				return i
-			}
-		case isDecimal(d) || x1 == 'x' && isHex(d):
-			d = '0'
-		default:
-			if p == '_' {
-				return i - 1
-			}
-			d = '.'
-		}
-	}
-	if d == '_' {
-		return len(x) - 1
-	}
+// 	// mantissa and exponent
+// 	for ; i < len(x); i++ {
+// 		p := d // previous digit
+// 		d = rune(x[i])
+// 		switch {
+// 		case d == '_':
+// 			if p != '0' {
+// 				return i
+// 			}
+// 		case isDecimal(d) || x1 == 'x' && isHex(d):
+// 			d = '0'
+// 		default:
+// 			if p == '_' {
+// 				return i - 1
+// 			}
+// 			d = '.'
+// 		}
+// 	}
+// 	if d == '_' {
+// 		return len(x) - 1
+// 	}
 
-	return -1
-}
+// 	return -1
+// }
 
-func digitVal(ch rune) int {
-	switch {
-	case '0' <= ch && ch <= '9':
-		return int(ch - '0')
-	case 'a' <= lower(ch) && lower(ch) <= 'f':
-		return int(lower(ch) - 'a' + 10)
-	}
-	return 16 // larger than any legal digit val
-}
+//@todo remove -----------------------------------------------
+// func digitVal(ch rune) int {
+// 	switch {
+// 	case '0' <= ch && ch <= '9':
+// 		return int(ch - '0')
+// 	case 'a' <= lower(ch) && lower(ch) <= 'f':
+// 		return int(lower(ch) - 'a' + 10)
+// 	}
+// 	return 16 // larger than any legal digit val
+// }
 
 //scanComment scans current line or lines and returns if it is a comment or not
 func (s *Scanner) scanComment(ch rune) rune {
