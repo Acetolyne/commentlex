@@ -92,6 +92,9 @@ var Extensions = []CommentValues{
 // IsValid reports whether the position is valid.
 func (pos *Position) IsValid() bool { return pos.Line > 0 }
 
+//Return valid filetypes
+func GetExtensions() []CommentValues { return Extensions }
+
 func (pos Position) String() string {
 	s := pos.Filename
 	if s == "" {
