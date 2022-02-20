@@ -21,8 +21,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	//"unicode"
 	"unicode/utf8"
 )
 
@@ -55,7 +53,7 @@ type CommentValues struct {
 //If a single line comment requires you to end the comment then you may use the startMulti and end Multi fields to specify the characters that end the comment
 //If the same filetype also has multiline comments that are different you may specify a new block with the same file extension and both will be processed.
 //
-//Template for new
+//Template for new or add extensions to one that matches below.
 // {
 // 	ext:         []string{".FILEEXT"},
 // 	startSingle: "//",
@@ -92,9 +90,6 @@ var Extensions = []CommentValues{
 // IsValid reports whether the position is valid.
 func (pos *Position) IsValid() bool { return pos.Line > 0 }
 
-//Return valid filetypes
-func GetExtensions() []CommentValues { return Extensions }
-
 func (pos Position) String() string {
 	s := pos.Filename
 	if s == "" {
@@ -123,41 +118,41 @@ func (pos Position) String() string {
 //
 //@todo cleanup the mode bits
 const (
-	ScanIdents     = 1 << -Ident
-	ScanInts       = 1 << -Int
-	ScanFloats     = 1 << -Float // includes Ints and hexadecimal floats
-	ScanChars      = 1 << -Char
-	ScanStrings    = 1 << -String
-	ScanRawStrings = 1 << -RawString
-	ScanComments   = 1 << -Comment
-	SkipComments   = 1 << -skipComment // if set with ScanComments, comments become white space
-	GoTokens       = ScanIdents | ScanFloats | ScanChars | ScanStrings | ScanRawStrings | ScanComments | SkipComments
+	//ScanIdents     = 1 << -Ident
+	//ScanInts       = 1 << -Int
+	//ScanFloats     = 1 << -Float // includes Ints and hexadecimal floats
+	//ScanChars      = 1 << -Char
+	//ScanStrings    = 1 << -String
+	//ScanRawStrings = 1 << -RawString
+	ScanComments = 1 << -Comment
+	//SkipComments   = 1 << -skipComment // if set with ScanComments, comments become white space
+	GoTokens = ScanComments
 )
 
 // The result of Scan is one of these tokens or a Unicode character.
 const (
 	EOF = -(iota + 1)
 	Ident
-	Int
-	Float
+	//Int
+	//Float
 	Char
-	String
-	RawString
+	//String
+	//RawString
 	Comment
 
 	// internal use only
-	skipComment
+	//skipComment
 )
 
 var tokenString = map[rune]string{
-	EOF:       "EOF",
-	Ident:     "Ident",
-	Int:       "Int",
-	Float:     "Float",
-	Char:      "Char",
-	String:    "String",
-	RawString: "RawString",
-	Comment:   "Comment",
+	EOF:   "EOF",
+	Ident: "Ident",
+	//Int:       "Int",
+	//Float:     "Float",
+	Char: "Char",
+	//String:    "String",
+	//RawString: "RawString",
+	Comment: "Comment",
 }
 
 // TokenString returns a printable string for a token or Unicode character.
@@ -264,9 +259,6 @@ func (s *Scanner) Init(file string) *Scanner {
 	// All comment types that are possible when we first start scanning
 	s.singlePossible = true
 	s.multiPossible = true
-	// for v := range Extensions {
-	// 	s.CommentStatusSingle[v] = ""
-	// }
 	if s.CommentStatusSingle == nil {
 		s.CommentStatusSingle = make(map[int]string)
 	}
@@ -288,8 +280,6 @@ func (s *Scanner) Init(file string) *Scanner {
 	s.src = src
 
 	s.srcType = filepath.Ext(file)
-
-	//@todo since we can only parse UTF-8 encoded files lets check if its valid UTF-8 before we do any operations on it
 
 	// initialize source buffer
 	// (the first call to next() will fill it by calling src.Read)
@@ -320,6 +310,9 @@ func (s *Scanner) Init(file string) *Scanner {
 
 	return s
 }
+
+//Return valid filetypes
+func (s *Scanner) GetExtensions() []CommentValues { return Extensions }
 
 // next reads and returns the next Unicode character. It is designed such
 // that only a minimal amount of work needs to be done in the common ASCII
@@ -449,237 +442,13 @@ func (s *Scanner) error(msg string) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", pos, msg)
 }
 
-//@todo remove
-// func (s *Scanner) errorf(format string, args ...interface{}) {
-// 	s.error(fmt.Sprintf(format, args...))
-// }
-//@todo remove ------------------
-// func (s *Scanner) isIdentRune(ch rune, i int) bool {
-// 	if s.IsIdentRune != nil {
-// 		return s.IsIdentRune(ch, i)
-// 	}
-// 	return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch) && i > 0
-// }
-
-//@todo remove
-// func (s *Scanner) scanIdentifier() rune {
-// 	// we know the zero'th rune is OK; start scanning at the next one
-// 	ch := s.next()
-// 	for i := 1; s.isIdentRune(ch, i); i++ {
-// 		ch = s.next()
-// 	}
-// 	return ch
-// }
-
-//@todo remove --------------------------------------------
-// func lower(ch rune) rune     { return ('a' - 'A') | ch } // returns lower-case ch iff ch is ASCII letter
-// func isDecimal(ch rune) bool { return '0' <= ch && ch <= '9' }
-// func isHex(ch rune) bool     { return '0' <= ch && ch <= '9' || 'a' <= lower(ch) && lower(ch) <= 'f' }
-
-//@todo remove ------------------------------------------------
-// digits accepts the sequence { digit | '_' } starting with ch0.
-// If base <= 10, digits accepts any decimal digit but records
-// the first invalid digit >= base in *invalid if *invalid == 0.
-// digits returns the first rune that is not part of the sequence
-// anymore, and a bitset describing whether the sequence contained
-// digits (bit 0 is set), or separators '_' (bit 1 is set).
-// func (s *Scanner) digits(ch0 rune, base int, invalid *rune) (ch rune, digsep int) {
-// 	ch = ch0
-// 	if base <= 10 {
-// 		max := rune('0' + base)
-// 		for isDecimal(ch) || ch == '_' {
-// 			ds := 1
-// 			if ch == '_' {
-// 				ds = 2
-// 			} else if ch >= max && *invalid == 0 {
-// 				*invalid = ch
-// 			}
-// 			digsep |= ds
-// 			ch = s.next()
-// 		}
-// 	} else {
-// 		for isHex(ch) || ch == '_' {
-// 			ds := 1
-// 			if ch == '_' {
-// 				ds = 2
-// 			}
-// 			digsep |= ds
-// 			ch = s.next()
-// 		}
-// 	}
-// 	return
-// }
-//@todo remove -------------------------------------------------
-// func litname(prefix rune) string {
-// 	switch prefix {
-// 	default:
-// 		return "decimal literal"
-// 	case 'x':
-// 		return "hexadecimal literal"
-// 	case 'o', '0':
-// 		return "octal literal"
-// 	case 'b':
-// 		return "binary literal"
-// 	}
-// }
-
-//@todo remove -------------------------------------------------
-// invalidSep returns the index of the first invalid separator in x, or -1.
-// func invalidSep(x string) int {
-// 	x1 := ' ' // prefix char, we only care if it's 'x'
-// 	d := '.'  // digit, one of '_', '0' (a digit), or '.' (anything else)
-// 	i := 0
-
-// 	// a prefix counts as a digit
-// 	if len(x) >= 2 && x[0] == '0' {
-// 		x1 = lower(rune(x[1]))
-// 		if x1 == 'x' || x1 == 'o' || x1 == 'b' {
-// 			d = '0'
-// 			i = 2
-// 		}
-// 	}
-
-// 	// mantissa and exponent
-// 	for ; i < len(x); i++ {
-// 		p := d // previous digit
-// 		d = rune(x[i])
-// 		switch {
-// 		case d == '_':
-// 			if p != '0' {
-// 				return i
-// 			}
-// 		case isDecimal(d) || x1 == 'x' && isHex(d):
-// 			d = '0'
-// 		default:
-// 			if p == '_' {
-// 				return i - 1
-// 			}
-// 			d = '.'
-// 		}
-// 	}
-// 	if d == '_' {
-// 		return len(x) - 1
-// 	}
-
-// 	return -1
-// }
-
-//@todo remove -----------------------------------------------
-// func digitVal(ch rune) int {
-// 	switch {
-// 	case '0' <= ch && ch <= '9':
-// 		return int(ch - '0')
-// 	case 'a' <= lower(ch) && lower(ch) <= 'f':
-// 		return int(lower(ch) - 'a' + 10)
-// 	}
-// 	return 16 // larger than any legal digit val
-// }
-
 //scanComment scans current line or lines and returns if it is a comment or not
 func (s *Scanner) scanComment(ch rune) rune {
-	// isSingle := false
-	// isMulti := false
-	// //multicheck := ""
-	// for ch != '\n' && ch >= 0 {
-	// 	for v := range Extensions {
-	// 		curext := Extensions[v].ext
-	// 		for ext := range curext {
-	// 			if s.srcType == curext[ext] {
-	// 				curlensingle := len(s.CommentStatusSingle[v])
-	// 				//curlenmulti := len(s.CommentStatusMulti[v])
-	// 				if Extensions[v].startSingle != "" {
-	// 					if curlensingle < len(string(Extensions[v].startSingle)) {
-	// 						if string(ch) == string(Extensions[v].startSingle[curlensingle]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-	// 							s.CommentStatusSingle[v] += string(ch)
-	// 							if len(s.CommentStatusSingle[v]) == len(Extensions[v].startSingle) {
-	// 								isSingle = true
-	// 							}
-	// 						} else {
-	// 							s.CommentStatusSingle[v] = ""
-
-	// 						}
-	// 					}
-	// 				}
-	// 				// if Extensions[v].startMulti != "" {
-	// 				// 	multicheck += string(ch)
-	// 				// 	if curlenmulti < len(string(Extensions[v].startMulti)) {
-	// 				// 		if string(ch) == string(Extensions[v].startMulti[curlenmulti]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-	// 				// 			s.CommentStatusMulti[v] += string(ch)
-	// 				// 			if len(s.CommentStatusMulti[v]) == len(Extensions[v].startMulti) {
-	// 				// 				isMulti = true
-	// 				// 				s.MultiExtNum = v
-	// 				// 			}
-	// 				// 		} else {
-	// 				// 			s.CommentStatusMulti[v] = ""
-
-	// 				// 		}
-	// 				// 	}
-	// 				// }
-	// 			}
-	// 		}
-	// 	}
-	// 	ch = s.next()
-	// }
-	// //Always check multi first because in some languages multi starts with the same characters as single line comments (Lua)
-	// //@todo fix issue where anything after multiline comment is not returned as a comment
-	// fmt.Println("isMulti: ", isMulti, "isSingle:", isSingle)
-	// for v := range Extensions {
-	// 	if isMulti == true {
-	// 		if s.CommentStatusMulti[v] == Extensions[v].startMulti {
-	// 			// 	for ch != EOF {
-	// 			//  multicheck += string(ch)
-	// 			// 		curlenmultiend := len(s.CommentStatusMultiEnd[s.MultiExtNum])
-	// 			// 		if Extensions[s.MultiExtNum].endMulti != "" {
-	// 			// 			fmt.Println(Extensions[s.MultiExtNum].endMulti)
-	// 			// 			if curlenmultiend < len(string(Extensions[s.MultiExtNum].endMulti)) {
-	// 			// 				if string(ch) == string(Extensions[s.MultiExtNum].endMulti[curlenmultiend]) { //If this character matches the current character in the extension then append it else clear it because characters are not consecutive
-	// 			// 					fmt.Println("adding ch")
-	// 			// 					s.CommentStatusMultiEnd[s.MultiExtNum] += string(ch)
-	// 			// 				} else {
-	// 			// 					s.CommentStatusMultiEnd[s.MultiExtNum] = ""
-
-	// 			// 				}
-	// 			// 			}
-	// 			// 			if curlenmultiend == len(string(Extensions[s.MultiExtNum].endMulti)) {
-	// 			// 				fmt.Println("SM:", s.Match)
-	// 			// 				//@todo below is temp since flowcat passes this value in by default for testing only should check if not null
-	// 			// 				if s.Match != "" {
-	// 			// 					fmt.Println("Trying to match")
-	// 			// 					return Comment
-	// 			// 					// if strings.Contains(multicheck, s.Match) {
-	// 			// 					// 	return Comment
-	// 			// 					// } else {
-	// 			// 					// 	return ch
-	// 			// 					// }
-	// 			// 				} else {
-	// 			// 					return Comment
-	// 			// 				}
-	// 			// 			}
-	// 			// 		}
-	// 			// 		fmt.Println("NEXT")
-	// 			// 		ch = s.next()
-	// 			// 	}
-	// 		}
-	// 		s.CommentStatusMulti[v] = ""
-	// 		s.CommentStatusMultiEnd[v] = ""
-	// 	}
-	// }
-	// for v := range Extensions {
-	// 	if isSingle == true {
-	// 		s.CommentStatusSingle[v] = ""
-	// 		return Comment
-	// 	}
-	// }
-	// return ch
 	isSingle := false
 	isMulti := false
 
 	for ch >= 0 {
 		for {
-			// if ch == EOF {
-			// 	break
-			// }
-
 			for v := range Extensions {
 				SingleFull := Extensions[v].startSingle
 				curext := Extensions[v].ext
@@ -688,13 +457,9 @@ func (s *Scanner) scanComment(ch rune) rune {
 						if Extensions[v].startSingle != "" {
 							if s.Match != "" {
 								SingleFull = Extensions[v].startSingle + string(s.Match)
-								//fmt.Println("SingleFull:", SingleFull, s.CommentStatusSingle[v])
 							}
-							//fmt.Println(len(s.CommentStatusSingle[v]), len(Extensions[v].startSingle))
-							//fmt.Println(len(s.CommentStatusSingle[v]), len(SingleFull))
 							if len(s.CommentStatusSingle[v]) < len(SingleFull) {
 								if string(ch) != " " {
-									//fmt.Println("Comparing:", string(ch), string(SingleFull[len(s.CommentStatusSingle[v])]))
 									if string(ch) == string(SingleFull[len(s.CommentStatusSingle[v])]) {
 										s.CommentStatusSingle[v] += string(ch)
 									} else {
@@ -735,7 +500,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 					}
 					isSingle = false
 					isMulti = false
-					//return Comment
 					MultiEnded := false
 
 					if Extensions[v].endMulti != "" {
@@ -747,8 +511,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 							return Comment
 						}
 						for !MultiEnded {
-							// 	//
-							//fmt.Println("MultiEnded:", MultiEnded, len(s.CommentStatusMultiEnd[v]), len(Extensions[v].endMulti))
 							if len(s.CommentStatusMultiEnd[v]) < len(Extensions[v].endMulti) {
 								s.CommentStatusMultiAll[v] += string(ch)
 								if string(ch) == string(Extensions[v].endMulti[len(s.CommentStatusMultiEnd[v])]) {
@@ -760,7 +522,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 								MultiEnded = true
 								isSingle = false
 								isMulti = false
-								//return Comment
 								if s.Match != "" {
 									if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
 										s.CommentStatusMultiEnd[v] = ""
@@ -771,26 +532,10 @@ func (s *Scanner) scanComment(ch rune) rune {
 									return Comment
 								}
 							}
-							// 	// 			if Extensions[v].endMulti == s.CommentStatusMultiEnd[v] {
-							// 	// 				MultiEnded = true
-							// 	// 				isSingle = false
-							// 	// 				isMulti = false
-							// 	// 				if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
-							// 	// 					return Comment
-							// 	// 				}
-							// 	// 			}
-							// 	// 		}
-							// 	// 	}
-							// 	// 	// if MultiEnded == true {
-							// 	// 	// 	isSingle = false
-							// 	// 	// 	isMulti = false
-							// 	// 	// 	break
 							ch = s.next()
 						}
 					}
 				}
-				//fmt.Println("EOL", isSingle, isMulti)
-
 				if isSingle {
 					isSingle = false
 					isMulti = false
@@ -802,7 +547,6 @@ func (s *Scanner) scanComment(ch rune) rune {
 			ch = s.next()
 		}
 	}
-	fmt.Println("Im down here")
 	return ch
 }
 
