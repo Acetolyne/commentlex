@@ -10,6 +10,7 @@ import (
 
 //Ensures that each line gets checked by all the extensions available
 //Prior issues with lines not being checked by extensions that were previously checked by prior lines
+//@todo the wants should be global variables that are the same across all file types
 func TestCommentScanAllExtensions(t *testing.T) {
 	res := ""
 	var s lexer.Scanner
@@ -116,5 +117,27 @@ func TestDefaultFileExtension(t *testing.T) {
 	if res != want {
 		fmt.Println("got", res, "want", want)
 		t.Fatalf("unable to detect multiple comment types in single file")
+	}
+}
+
+func TestRubyCommentsWork(t *testing.T) {
+	res := ""
+	var s lexer.Scanner
+	s.Mode = lexer.ScanComments
+	s.Match = "@todo"
+	s.Init("tests/test.rb")
+	tok := s.Scan()
+	for tok != lexer.EOF {
+		if tok == lexer.Comment {
+			line := strings.ReplaceAll(s.TokenText(), "\n", " ")
+			res += strings.ReplaceAll(line, "\t", "")
+		}
+		tok = s.Scan()
+	}
+
+	want := "#@todo comment 1=begin @todo multiline comment 2 =end#@todo comment 3"
+	if res != want {
+		fmt.Println("got", res, "want", want)
+		t.Fatalf("unable to use ruby comments")
 	}
 }

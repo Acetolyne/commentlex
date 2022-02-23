@@ -85,6 +85,12 @@ var Extensions = []CommentValues{
 		startMulti:  "--[[",
 		endMulti:    "--]]",
 	},
+	{
+		ext:         []string{".rb"},
+		startSingle: "#",
+		startMulti:  "=begin",
+		endMulti:    "=end",
+	},
 }
 
 // IsValid reports whether the position is valid.
