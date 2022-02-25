@@ -318,7 +318,13 @@ func (s *Scanner) Init(file string) *Scanner {
 }
 
 //Return valid filetypes
-func (s *Scanner) GetExtensions() []CommentValues { return Extensions }
+func (s *Scanner) GetExtensions() []string {
+	var validtypes []string
+	for e := range Extensions {
+		validtypes = append(validtypes, Extensions[e].ext...)
+	}
+	return validtypes
+}
 
 // next reads and returns the next Unicode character. It is designed such
 // that only a minimal amount of work needs to be done in the common ASCII
