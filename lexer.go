@@ -520,7 +520,14 @@ func (s *Scanner) scanComment(ch rune) rune {
 							MultiEnded = true
 							isSingle = false
 							isMulti = false
-							return Comment
+							if s.Match != "" {
+								if strings.Contains(s.CommentStatusMultiAll[v], s.Match) {
+									s.CommentStatusMultiEnd[v] = ""
+									return Comment
+								}
+							} else {
+								s.CommentStatusMultiEnd[v] = ""
+							}
 						}
 						for !MultiEnded {
 							if len(s.CommentStatusMultiEnd[v]) < len(Extensions[v].endMulti) {
