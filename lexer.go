@@ -91,6 +91,10 @@ var Extensions = []CommentValues{
 		startMulti:  "=begin",
 		endMulti:    "=end",
 	},
+	{
+		ext:         []string{".py"},
+		startSingle: "#",
+	},
 }
 
 // IsValid reports whether the position is valid.
