@@ -141,3 +141,25 @@ func TestRubyCommentsWork(t *testing.T) {
 		t.Fatalf("unable to use ruby comments")
 	}
 }
+
+func TestPythonNewStyleCommentsWork(t *testing.T) {
+	res := ""
+	var s lexer.Scanner
+	s.Mode = lexer.ScanComments
+	s.Match = "@todo"
+	s.Init("tests/test.py")
+	tok := s.Scan()
+	for tok != lexer.EOF {
+		if tok == lexer.Comment {
+			line := strings.ReplaceAll(s.TokenText(), "\n", " ")
+			res += strings.ReplaceAll(line, "\t", "")
+		}
+		tok = s.Scan()
+	}
+
+	want := "#@todo comment 1# @todo comment 3"
+	if res != want {
+		fmt.Println("got", res, "want", want)
+		t.Fatalf("unable to use ruby comments")
+	}
+}
