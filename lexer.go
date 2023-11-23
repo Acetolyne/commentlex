@@ -42,24 +42,25 @@ type CommentValues struct {
 	endMulti    string
 }
 
-//Initialize comment characters based on file extension
-//This may be more than one type per filetype as html can have javascript comments in them as well and there may be other filetypes that have multiple languages in them
-//Add new file extensions here to add support for them to get themn officially added to future builds please submit a feature request at https://github.com/Acetolyne/commentlex
-//@ext a list of file extensions that can be scanned, can be a single type or multiple types
-//@startSingle the start characters of a single line comment
-//@startMulti the start characters of a multi line comment
-//@endMulti the end characters of a multi line comment
+// Initialize comment characters based on file extension
+// This may be more than one type per filetype as html can have javascript comments in them as well and there may be other filetypes that have multiple languages in them
+// Add new file extensions here to add support for them to get themn officially added to future builds please submit a feature request at https://github.com/Acetolyne/commentlex
+// @ext a list of file extensions that can be scanned, can be a single type or multiple types
+// @startSingle the start characters of a single line comment
+// @startMulti the start characters of a multi line comment
+// @endMulti the end characters of a multi line comment
 //
-//If a single line comment requires you to end the comment then you may use the startMulti and end Multi fields to specify the characters that end the comment
-//If the same filetype also has multiline comments that are different you may specify a new block with the same file extension and both will be processed.
+// If a single line comment requires you to end the comment then you may use the startMulti and end Multi fields to specify the characters that end the comment
+// If the same filetype also has multiline comments that are different you may specify a new block with the same file extension and both will be processed.
 //
-//Template for new or add extensions to one that matches below.
-// {
-// 	ext:         []string{".FILEEXT"},
-// 	startSingle: "//",
-// 	startMulti:  "/*",
-// 	endMulti:    "*/",
-// },
+// Template for new or add extensions to one that matches below.
+//
+//	{
+//		ext:         []string{".FILEEXT"},
+//		startSingle: "//",
+//		startMulti:  "/*",
+//		endMulti:    "*/",
+//	},
 var Extensions = []CommentValues{
 	{
 		ext:         []string{"", ".go", ".py", ".js", ".rs", ".html", ".gohtml", ".php", ".c", ".cpp", ".h", ".class", ".jar", ".java", ".jsp"},
@@ -95,6 +96,11 @@ var Extensions = []CommentValues{
 		ext:         []string{".py"},
 		startSingle: "#",
 	},
+	{
+		ext:        []string{".tmpl"},
+		startMulti: "{{/*",
+		endMulti:   "*/}}",
+	},
 }
 
 // IsValid reports whether the position is valid.
@@ -126,7 +132,7 @@ func (pos Position) String() string {
 // Use GoTokens to configure the Scanner such that it accepts all Go
 // literal tokens including Go identifiers. Comments will be skipped.
 //
-//@todo cleanup the mode bits
+// @todo cleanup the mode bits
 const (
 	//ScanIdents     = 1 << -Ident
 	//ScanInts       = 1 << -Int
@@ -321,7 +327,7 @@ func (s *Scanner) Init(file string) *Scanner {
 	return s
 }
 
-//Return valid filetypes
+// Return valid filetypes
 func (s *Scanner) GetExtensions() []string {
 	var validtypes []string
 	for e := range Extensions {
@@ -458,7 +464,7 @@ func (s *Scanner) error(msg string) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", pos, msg)
 }
 
-//scanComment scans current line or lines and returns if it is a comment or not
+// scanComment scans current line or lines and returns if it is a comment or not
 func (s *Scanner) scanComment(ch rune) rune {
 	isSingle := false
 	isMulti := false
